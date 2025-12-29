@@ -23,22 +23,22 @@
 
 | Path | Purpose | Notes |
 | --- | --- | --- |
-| `Individual-level proteomic, demographic, and longitudinal follow-up data.R` | Cleans Olink NPX proteomics, imputes with `miceforest`, enriches with demographics + ICD-10 follow-up | Includes helper to compute decimal age, censoring by UK region, and `prepare_individual_level_data()` workflow |
-| `MR and sensitivity analysis.R` | Core MR orchestration (IVW, Wald ratio, MR-Egger) + heterogeneity, pleiotropy, MR-PRESSO, contamination mixture | Assumes `TwoSampleMR`, `MRPRESSO`, `MendelianRandomization`, `metafor` |
-| `Mediation analysis.R` | Two-step MR mediation with delta-method scaling, proportional adjustment when Σ|indirect|>1, FDR control | Returns tidy tibble with raw/scaled effects, CIs, and binary/continuous specific reporting |
-| `Mediation-informed machine learning modeling framework.R` | Trains 30 caret algorithms, disease-wise models, modifiable-trait pathways, and health-potential scores | Produces orchestrated list with best base learner, disease models, trait scores |
-| `Modeling performance validation.R` | Validates survival and incidence via KM curves plus biological-age correlations (KDM BA & PhenoAge) | Bundles plotting helpers and spline-based score-vs-age analysis |
-| `Personalized health advisory LLM system.py` | Retrieval-augmented generation: BM25 + monoT5 re-rank + weighted evidence feeding a Kimi-KK prompt builder | Provides `EvidenceFragment`, `KnowledgeBase`, and `generate_personalized_advice()` |
-| `Longevity 脚本/app(lightGBM使用原脚本).py` | Flask service for batch LightGBM inference across 17+ boosters with upload handling and summary stats | Handles CSV/Excel uploads, auto feature alignment, multi-model predictions |
-| `Longevity 脚本/predict_cli(调用lightGBM).py` | Thin CLI over `app.py` for offline inference + JSON output | Ideal for scripting / cron jobs |
-| `Longevity 脚本/server(后端).js` | Node/Express backend (login, report orchestration, PDF generation, RAG triggers) | Integrates OpenAI/Moonshot APIs, MySQL auth, Multer uploads, PDF + LightGBM pipelines |
-| `Longevity 脚本/chat (对话界面).html`, `index(登录).html`, `register(注册).html` | Front-end assets: chat UI, login, registration pages themed for the Longevity portal | Designed to talk to the Express backend |
-| `Longevity 脚本/pdfGeneration (pdf生成).py` | Converts structured JSON into a polished health report via WeasyPrint with gradients, score tables, timelines | Includes fixed-layout HTML/CSS template |
-| `Longevity 脚本/data_cleaning_local_v2(微调数据清理脚本).py` | OCR-cleaning pipeline that calls a local Ollama LLM to redact noise and create structured reports | Requires `requests`, `tqdm`, and an accessible Ollama endpoint |
-| `Longevity 脚本/train_qlora(微调).py` | QLoRA trainer with BitsAndBytes config, PEFT, chat-template preprocessing, multi-GPU support | Reads settings from `config.yaml`, uses HuggingFace datasets/transformers |
-| `Longevity 脚本/混淆实验报告.py` | Batch-converts “user feedback + dialogue” text files into Markdown reports via Moonshot/Kimi API | Accepts CLI args for folders, model choice, limits |
-| `LICENSE` | MIT License | Applies to the whole repo |
-| `README.md` | You're reading it | Serves as the GitHub landing page |
+| [`Individual-level proteomic, demographic, and longitudinal follow-up data.R`](<Individual-level proteomic, demographic, and longitudinal follow-up data.R>) | Cleans Olink NPX proteomics, imputes with `miceforest`, enriches with demographics + ICD-10 follow-up | Includes helper to compute decimal age, censoring by UK region, and `prepare_individual_level_data()` workflow |
+| [`MR and sensitivity analysis.R`](<MR and sensitivity analysis.R>) | Core MR orchestration (IVW, Wald ratio, MR-Egger) + heterogeneity, pleiotropy, MR-PRESSO, contamination mixture | Assumes `TwoSampleMR`, `MRPRESSO`, `MendelianRandomization`, `metafor` |
+| [`Mediation analysis.R`](<Mediation analysis.R>) | Two-step MR mediation with delta-method scaling, proportional adjustment when Σ|indirect|>1, FDR control | Returns tidy tibble with raw/scaled effects, CIs, and binary/continuous specific reporting |
+| [`Mediation-informed machine learning modeling framework.R`](<Mediation-informed machine learning modeling framework.R>) | Trains 30 caret algorithms, disease-wise models, modifiable-trait pathways, and health-potential scores | Produces orchestrated list with best base learner, disease models, trait scores |
+| [`Modeling performance validation.R`](<Modeling performance validation.R>) | Validates survival and incidence via KM curves plus biological-age correlations (KDM BA & PhenoAge) | Bundles plotting helpers and spline-based score-vs-age analysis |
+| [`Personalized health advisory LLM system.py`](<Personalized health advisory LLM system.py>) | Retrieval-augmented generation: BM25 + monoT5 re-rank + weighted evidence feeding a Kimi-KK prompt builder | Provides `EvidenceFragment`, `KnowledgeBase`, and `generate_personalized_advice()` |
+| [`Longevity 脚本/app(lightGBM使用原脚本).py`](<Longevity 脚本/app(lightGBM使用原脚本).py>) | Flask service for batch LightGBM inference across 17+ boosters with upload handling and summary stats | Handles CSV/Excel uploads, auto feature alignment, multi-model predictions |
+| [`Longevity 脚本/predict_cli(调用lightGBM).py`](<Longevity 脚本/predict_cli(调用lightGBM).py>) | Thin CLI over `app.py` for offline inference + JSON output | Ideal for scripting / cron jobs |
+| [`Longevity 脚本/server(后端).js`](<Longevity 脚本/server(后端).js>) | Node/Express backend (login, report orchestration, PDF generation, RAG triggers) | Integrates OpenAI/Moonshot APIs, MySQL auth, Multer uploads, PDF + LightGBM pipelines |
+| [`Longevity 脚本/chat (对话界面).html`](<Longevity 脚本/chat (对话界面).html>), [`index(登录).html`](<Longevity 脚本/index(登录).html>), [`register(注册).html`](<Longevity 脚本/register(注册).html>) | Front-end assets: chat UI, login, registration pages themed for the Longevity portal | Designed to talk to the Express backend |
+| [`Longevity 脚本/pdfGeneration (pdf生成).py`](<Longevity 脚本/pdfGeneration (pdf生成).py>) | Converts structured JSON into a polished health report via WeasyPrint with gradients, score tables, timelines | Includes fixed-layout HTML/CSS template |
+| [`Longevity 脚本/data_cleaning_local_v2(微调数据清理脚本).py`](<Longevity 脚本/data_cleaning_local_v2(微调数据清理脚本).py>) | OCR-cleaning pipeline that calls a local Ollama LLM to redact noise and create structured reports | Requires `requests`, `tqdm`, and an accessible Ollama endpoint |
+| [`Longevity 脚本/train_qlora(微调).py`](<Longevity 脚本/train_qlora(微调).py>) | QLoRA trainer with BitsAndBytes config, PEFT, chat-template preprocessing, multi-GPU support | Reads settings from `config.yaml`, uses HuggingFace datasets/transformers |
+| [`Longevity 脚本/混淆实验报告.py`](<Longevity 脚本/混淆实验报告.py>) | Batch-converts “user feedback + dialogue” text files into Markdown reports via Moonshot/Kimi API | Accepts CLI args for folders, model choice, limits |
+| [`LICENSE`](<LICENSE>) | MIT License | Applies to the whole repo |
+| [`README.md`](<README.md>) | You're reading it | Serves as the GitHub landing page |
 
 ## Getting Started
 
