@@ -8,7 +8,6 @@ MEDLI bundles the full workflow from proteomic data preparation through Mendelia
 | --- | --- |
 | [`Individual-level proteomic, demographic, and longitudinal follow-up data.R`](Individual-level proteomic, demographic, and longitudinal follow-up data.R) | Cleans Olink NPX proteomics, merges demographics/follow-up, handles missingness. |
 | [`MR analysis.R`](MR analysis.R) | MR orchestration (Wald ratio, IVW, Egger), heterogeneity, pleiotropy, I², contamination-mixture; main automated pipeline. |
-| [`MR and sensitivity analysis.R`](MR and sensitivity analysis.R) | Additional MR routines with sensitivity tests and diagnostics. |
 | [`Mediation analysis.R`](Mediation analysis.R) | Two-step MR mediation with scaling, FDR control, binary/continuous reporting. |
 | [`Mediation-informed machine learning modeling framework.R`](Mediation-informed machine learning modeling framework.R) | Trains/evaluates multiple learners, disease-wise models, modifiable-trait pathways. |
 | [`Modeling performance validation.R`](Modeling performance validation.R) | Survival/incidence validation, KM curves, biological-age correlations. |
@@ -18,6 +17,7 @@ MEDLI bundles the full workflow from proteomic data preparation through Mendelia
 | [`report_generator.py`](report_generator.py) | Utilities to assemble narrative reports from model outputs. |
 | [`server_backend.js`](server_backend.js) | Node/Express backend for uploads, auth, report orchestration, PDF download. |
 | [`Personalized health advisory LLM system.py`](Personalized health advisory LLM system.py) | Retrieval + prompt builder for personalized advice (Kimi/OpenAI compatible). |
+| [`Overall flowchart.png`](Overall flowchart.png) | High-level visual of the MEDLI processing pipeline. |
 | [`LICENSE`](LICENSE) | MIT License for the repository. |
 
 ## Prerequisites
