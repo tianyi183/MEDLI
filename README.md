@@ -20,6 +20,13 @@ MEDLI bundles the full workflow from proteomic data preparation through Mendelia
 | [`Overall flowchart.png`](Overall%20flowchart.png) | High-level visual of the MEDLI processing pipeline. |
 | [`LICENSE`](LICENSE) | MIT License for the repository. |
 
+## End-to-end Flow
+
+The overall pipeline is summarized in the flowchart below (see `Overall flowchart.png` for the full diagram):
+
+![MEDLI Overall Flowchart](Overall%20flowchart.png)
+
+
 ## Prerequisites
 
 - **R 4.3+** with: `TwoSampleMR`, `MRPRESSO`, `MendelianRandomization`, `metafor`, `caret`, `survival`, `ggplot2`, `tidyverse`, `data.table`, `openxlsx`.
