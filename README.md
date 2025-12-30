@@ -6,18 +6,18 @@ MEDLI bundles the full workflow from proteomic data preparation through Mendelia
 
 | Path | What it does |
 | --- | --- |
-| [`Individual-level proteomic, demographic, and longitudinal follow-up data.R`](Individual-level proteomic, demographic, and longitudinal follow-up data.R) | Cleans Olink NPX proteomics, merges demographics/follow-up, handles missingness. |
-| [`MR analysis.R`](MR analysis.R) | MR orchestration (Wald ratio, IVW, Egger), heterogeneity, pleiotropy, I², contamination-mixture; main automated pipeline. |
-| [`Mediation analysis.R`](Mediation analysis.R) | Two-step MR mediation with scaling, FDR control, binary/continuous reporting. |
-| [`Mediation-informed machine learning modeling framework.R`](Mediation-informed machine learning modeling framework.R) | Trains/evaluates multiple learners, disease-wise models, modifiable-trait pathways. |
-| [`Modeling performance validation.R`](Modeling performance validation.R) | Survival/incidence validation, KM curves, biological-age correlations. |
+| [`Individual-level proteomic, demographic, and longitudinal follow-up data.R`](Individual-level%20proteomic,%20demographic,%20and%20longitudinal%20follow-up%20data.R) | Cleans Olink NPX proteomics, merges demographics/follow-up, handles missingness. |
+| [`MR analysis.R`](MR%20analysis.R) | MR orchestration (Wald ratio, IVW, Egger), heterogeneity, pleiotropy, I², contamination-mixture; main automated pipeline. |
+| [`Mediation analysis.R`](Mediation%20analysis.R) | Two-step MR mediation with scaling, FDR control, binary/continuous reporting. |
+| [`Mediation-informed machine learning modeling framework.R`](Mediation-informed%20machine%20learning%20modeling%20framework.R) | Trains/evaluates multiple learners, disease-wise models, modifiable-trait pathways. |
+| [`Modeling performance validation.R`](Modeling%20performance%20validation.R) | Survival/incidence validation, KM curves, biological-age correlations. |
 | [`app_lightgbm_service.py`](app_lightgbm_service.py) | LightGBM inference service for batch scoring via REST. |
 | [`predict_cli.py`](predict_cli.py) | CLI wrapper for LightGBM batch predictions. |
 | [`pdf_generation.py`](pdf_generation.py) | Converts structured text to PDF health reports (WeasyPrint). |
 | [`report_generator.py`](report_generator.py) | Utilities to assemble narrative reports from model outputs. |
 | [`server_backend.js`](server_backend.js) | Node/Express backend for uploads, auth, report orchestration, PDF download. |
-| [`Personalized health advisory LLM system.py`](Personalized health advisory LLM system.py) | Retrieval + prompt builder for personalized advice (Kimi/OpenAI compatible). |
-| [`Overall flowchart.png`](Overall flowchart.png) | High-level visual of the MEDLI processing pipeline. |
+| [`Personalized health advisory LLM system.py`](Personalized%20health%20advisory%20LLM%20system.py) | Retrieval + prompt builder for personalized advice (Kimi/OpenAI compatible). |
+| [`Overall flowchart.png`](Overall%20flowchart.png) | High-level visual of the MEDLI processing pipeline. |
 | [`LICENSE`](LICENSE) | MIT License for the repository. |
 
 ## Prerequisites
