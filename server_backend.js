@@ -21,66 +21,66 @@ const PDF_GENERATION_PATH = '/www/wwwroot/www.longevityllmpumc.com/PDF_generatio
 const PDF_OUTPUT_DIR = path.join(__dirname, 'generated_pdfs');
 
 
-//映射表
+// Mapping table from disease codes to human-readable labels
 const DISEASE_DICT = {
-  p130700: "甲状腺毒症",
-  p130706: "胰岛素依赖型糖尿病",
-  p130708: "非胰岛素依赖型糖尿病",
-  p130792: "肥胖症",
-  p130828: "其他体液、电解质及酸碱平衡紊乱",
-  p131288: "高血压性心脏病",
-  p131296: "心绞痛",
-  p131298: "急性心肌梗死",
-  p131306: "慢性缺血性心脏病",
-  p131310: "其他肺源性心脏病",
-  p131380: "动脉粥样硬化",
-  p131848: "血清阳性型类风湿性关节炎",
-  p131894: "系统性红斑狼疮",
-  p131900: "结缔组织其他系统性病变",
-  p132032: "慢性肾功能衰竭",
-  p132092: "男性生殖器官其他疾病",
-  p132132: "子宫其他非炎症性病变（宫颈除外）",
-  changOR: "总健康评分"
+  p130700: "Thyroid toxicosis",
+  p130706: "Insulin-dependent diabetes",
+  p130708: "Non-insulin-dependent diabetes",
+  p130792: "Obesity",
+  p130828: "Other fluid, electrolyte, and acid-base disorders",
+  p131288: "Hypertensive heart disease",
+  p131296: "Angina pectoris",
+  p131298: "Acute myocardial infarction",
+  p131306: "Chronic ischemic heart disease",
+  p131310: "Other pulmonary heart disease",
+  p131380: "Atherosclerosis",
+  p131848: "Seropositive rheumatoid arthritis",
+  p131894: "Systemic lupus erythematosus",
+  p131900: "Other systemic connective-tissue disorders",
+  p132032: "Chronic kidney failure",
+  p132092: "Other male genital organ disorders",
+  p132132: "Other non-inflammatory uterine disorders (excluding cervix)",
+  changOR: "Overall health score"
 };
 
 const RAG_RESULTS = {
-  "您患甲状腺毒症的风险": "thyrotoxic_7_4_txt_res",
-  "您患胰岛素依赖型糖尿病的风险": "typ1_6_30_txt",
-  "您患非胰岛素依赖型糖尿病的风险": "type2_6_30txt",
-  "您患肥胖症的风险": "obesity_7_1_txt_res",
-  "您患高血压性心脏病的风险": "hpertensi_res",
-  "您患心绞痛的风险": "anginapcet_7_1_txt",
-  "您患急性心肌梗死的风险": "acutemyoca_7_1_txt_res",
-  "您患慢性缺血性心脏病的风险": "chronicisc_res_7_1_txt",
-  "您患其他肺源性心脏病的风险": "pulmonaryh_7_1_txt_res",
-  "您患动脉粥样硬化的风险": "atherosclerosis_7_1_txt_res",
-  "您患系统性红斑狼疮的风险": "systemiclu_7_1_txt_res",
-  "您患结缔组织其他系统性病变的风险": "systemic_involvement_of_connective_tissue_7_1_txt_res",
-  "您患慢性肾功能衰竭的风险": "chronicren_7_1_txt_res",
-  "您患男性生殖器官其他疾病的风险": "disorderso_res"
+  "Your risk of thyroid toxicosis": "thyrotoxic_7_4_txt_res",
+  "Your risk of insulin-dependent diabetes": "typ1_6_30_txt",
+  "Your risk of non-insulin-dependent diabetes": "type2_6_30txt",
+  "Your risk of obesity": "obesity_7_1_txt_res",
+  "Your risk of hypertensive heart disease": "hpertensi_res",
+  "Your risk of angina pectoris": "anginapcet_7_1_txt",
+  "Your risk of acute myocardial infarction": "acutemyoca_7_1_txt_res",
+  "Your risk of chronic ischemic heart disease": "chronicisc_res_7_1_txt",
+  "Your risk of other pulmonary heart disease": "pulmonaryh_7_1_txt_res",
+  "Your risk of atherosclerosis": "atherosclerosis_7_1_txt_res",
+  "Your risk of systemic lupus erythematosus": "systemiclu_7_1_txt_res",
+  "Your risk of other systemic connective-tissue disorders": "systemic_involvement_of_connective_tissue_7_1_txt_res",
+  "Your risk of chronic kidney failure": "chronicren_7_1_txt_res",
+  "Your risk of other male genital disorders": "disorderso_res"
 };
 
 const DISEASE_NAME_MAPPING = {
-  // 英文 -> 中文
-  "thyroid toxicosis": "甲状腺毒症",
-  "insulin-dependent diabetes": "胰岛素依赖型糖尿病",
-  "type 1 diabetes": "胰岛素依赖型糖尿病",
-  "non-insulin-dependent diabetes": "非胰岛素依赖型糖尿病",
-  "type 2 diabetes": "非胰岛素依赖型糖尿病",
-  "obesity": "肥胖症",
-  "hypertensive heart disease": "高血压性心脏病",
-  "angina pectoris": "心绞痛",
-  "acute myocardial infarction": "急性心肌梗死",
-  "chronic ischemic heart disease": "慢性缺血性心脏病",
-  "other pulmonary heart disease": "其他肺源性心脏病",
-  "atherosclerosis": "动脉粥样硬化",
-  "seropositive rheumatoid arthritis": "血清阳性型类风湿性关节炎",
-  "systemic lupus erythematosus": "系统性红斑狼疮",
-  "systemic involvement of connective tissue": "结缔组织其他系统性病变",
-  "chronic kidney failure": "慢性肾功能衰竭",
-  "chronic renal failure": "慢性肾功能衰竭",
-  "male genital organ disorders": "男性生殖器官其他疾病",
-  "other noninflammatory disorders of uterus": "子宫其他非炎症性病变"
+  // English -> English (kept for compatibility with downstream mapping helpers)
+  "thyroid toxicosis": "Thyroid toxicosis",
+  "insulin-dependent diabetes": "Insulin-dependent diabetes",
+  "type 1 diabetes": "Type 1 diabetes",
+  "non-insulin-dependent diabetes": "Non-insulin-dependent diabetes",
+  "type 2 diabetes": "Type 2 diabetes",
+  "obesity": "Obesity",
+  "hypertensive heart disease": "Hypertensive heart disease",
+  "angina pectoris": "Angina pectoris",
+  "acute myocardial infarction": "Acute myocardial infarction",
+  "chronic ischemic heart disease": "Chronic ischemic heart disease",
+  "other pulmonary heart disease": "Other pulmonary heart disease",
+  "atherosclerosis": "Atherosclerosis",
+  "seropositive rheumatoid arthritis": "Seropositive rheumatoid arthritis",
+  "systemic lupus erythematosus": "Systemic lupus erythematosus",
+  "systemic involvement of connective tissue": "Other systemic connective-tissue disorder",
+  "chronic kidney failure": "Chronic kidney failure",
+  "chronic renal failure": "Chronic kidney failure",
+  "male genital organ disorders": "Other male genital organ disorder",
+  "other noninflammatory disorders of uterus": "Other non-inflammatory uterine disorder"
 };
 
 const DISEASE_NAME_MAPPING_REVERSE = {};
@@ -92,274 +92,148 @@ Object.entries(DISEASE_NAME_MAPPING).forEach(([en, zh]) => {
 
 
 const storage = multer.diskStorage({
-  destination: '/www/wwwroot/www.longevityllmpumc.com/uploads/',                       // 保存目录
+  destination: '/www/wwwroot/www.longevityllmpumc.com/uploads/', // directory for uploaded files
   filename: (req, file, cb) => {
-    // 例： 1720685243123_data_test_7_11.xlsx
+    // Example: 1720685243123_data_test_7_11.xlsx
     const unique = Date.now() + '_' + file.originalname;
     cb(null, unique);
   }
 });
 const upload = multer({
-  storage: storage,
+  storage,
   limits: {
-    fileSize: 10 * 1024 * 1024  // 10MB文件大小限制，避免大Excel文件被截断
-  }
+    fileSize: 10 * 1024 * 1024, // limit uploads to 10 MB to avoid truncated spreadsheets
+  },
 });
 
-// 配置项
+// Configuration (sensitive values are supplied via environment variables)
 const CONFIG = {
     openai: {
-        apiKey: '你的_OPENAI_API_KEY',
+        apiKey: process.env.OPENAI_API_KEY || 'YOUR_OPENAI_API_KEY', // replace with your OpenAI token
         baseURL: 'https://api.openai.com/v1',
         model: 'gpt-3.5-turbo',
     },
     kimi: {
-        apiKey: 'sk-vsgXdMGkM6NyvVuxR0dzDO7uPjAv6JyUZQgvveMLxF4o4aKd',
+        apiKey: process.env.KIMI_API_KEY || 'YOUR_KIMI_API_KEY', // replace with your Kimi token
         baseURL: 'https://api.moonshot.cn/v1',
         model: 'kimi-thinking-preview',
         systemMessage: {
             role: 'system',
-            content: '你是 一个个人健康管理专家。'
+            content: 'You are a personal health-management specialist.'
         }
     }
 };
 
-// 全局状态
+// Global conversation state for the Kimi-based dialogue
 let currentModel = 'kimi';
 let kimiMessages = [];
-const BASE_PROMPT_PREFIX = 
-`你是一位医学背景的AI健康管理专家。
+const BASE_PROMPT_PREFIX =
+`You are an AI health-management specialist with formal medical training.
 
-## 语言规则
-若用户首次回复使用英文，则全程使用英文交流。
+## Language Rules
+If the user’s first response is in English, keep the entire conversation in English.
 
-## 交流流程
-用户会先提供身体不适症状，你需按以下顺序进行多轮问诊：
+## Interview Flow
+The user begins by describing symptoms. Ask questions in this order:
 
-### 必问环节（第1-4轮）
-1. 饮食结构
-2. 运动习惯  
-3. 是否患有糖尿病/高血压，当前用药情况
-4. 吸烟情况
+### Mandatory rounds (1-4)
+1. Diet structure
+2. Exercise habits
+3. Diabetes/hypertension status and current medications
+4. Smoking status
 
-### 自由问诊环节（3-5轮）
-根据用户长寿得分调整轮数（得分越高轮数越少）。从以下问题中选择：
-- 近期关注的健康问题及不适症状（疼痛/疲劳/头晕等）
-- 症状出现时间、频率、持续时间
-- 体重变化、睡眠质量、大小便情况
-- 饮食细节：进餐规律、主食类型、蔬果摄入量、蛋白质来源、烹饪用油、零食甜饮料频率、食物过敏、保健品使用、饮酒习惯
-- 作息规律：入睡/起床时间、夜醒频率、工作时间、午休习惯、精力状态
-- 运动详情：频率/时长/类型（有氧/力量）、心率变化、日常步数、久坐时间、通勤方式
-- 情绪与压力：情绪基调、持续低落情况、压力来源、解压方式
-- 既往病史、手术史、用药情况
-- 生活环境：空气质量、饮用水源、烹饪方式
+### Free-form rounds (3-5)
+Adjust the number of rounds based on the longevity score (higher score �?fewer rounds). Choose among:
+- Current health concerns and symptoms (pain, fatigue, dizziness, etc.)
+- Symptom onset time, frequency, and duration
+- Weight changes, sleep quality, bowel/bladder status
+- Diet details: meal routine, staple foods, fruit/vegetable intake, protein sources, cooking oil, snacks/sweet drinks, food allergies, supplement usage, alcohol consumption
+- Daily routine: sleep/wake times, nighttime awakenings, working hours, nap habits, energy level
+- Exercise details: frequency/duration/type (cardio vs. strength), heart-rate response, daily steps, sedentary duration, commuting pattern
+- Mood and stress: baseline mood, persistent low mood, stressors, coping strategies
+- Past medical/surgical history and medication history
+- Living environment: air quality, drinking-water source, cooking method
 
-问诊结束后，无论用户回答什么，立即进入建议输出流程。
+Once questioning ends, immediately move on to the recommendation output regardless of the final reply.
 
-## 注意事项
-- 以人类医生口吻交流，避免暴露AI身份（如"当前处于XX流程"）
-- 严格按轮次提问，不多问不少问
-- 结合初始症状与问诊结果综合判断
+## Additional Notes
+- Speak like a human physician and never reveal you are an AI assistant.
+- Follow the prescribed number of rounds—no more, no fewer.
+- Combine initial symptoms with interview findings when reasoning.
 
-患者疾病风险信息如下：`;
+The patient’s disease-risk details are as follows:`;
 
 const BASE_PROMPT_SUFFIX_WITH_COT = `
-## 输出格式要求
+## Output Requirements
 
-### 风险等级说明
-- 高(86-100分) = 患病风险低
-- 中等(60-85分) = 患病风险中等  
-- 低(0-60分) = 患病风险高
+### Risk-level definitions
+- High score (86-100)  = low disease risk
+- Medium score (60-85) = medium disease risk
+- Low score (0-60)     = high disease risk
 
-### 建议输出格式（严格遵守）
-！所有！被判断为中风险和高风险的，**即分数只要实在86分以下的，都要进行输出！**
-对于所有的**中高风险**疾病，必须按以下格式输出：
+### Recommendation Format (strict)
+Every condition with a score under 86 (medium or high risk) **must** be included. Follow this template:
 
-**开头固定格式：**
-您患___的风险较___
+**Opening sentence:**
+Your risk of ___ is ___ (High/Medium/Low).
 
-**建议格式（至少3条）：**
-[1]建议内容；|推理：结合用户XXX情况，因为...所以...
-[2]建议内容；|推理：基于您的XXX指标...因此...
-[3]建议内容；|推理：考虑到XXX因素...需要...
+**Recommendations (at least three):**
+[1] Recommendation text; | Reasoning: tie the advice to specific user facts
+[2] Recommendation text; | Reasoning: reference the user’s metrics or habits
+[3] Recommendation text; | Reasoning: explain why the recommendation is necessary
 
-**格式要点：**
-- 必须以"您患___的风险"开头（一字不差）
-- 每条建议用 [数字] 开始，用 ； 结尾
-- 用 | 分隔建议与推理
-- 推理必须结合用户具体回复内容
-- 每条建议需换行
+**Formatting guidelines:**
+- Each line must start with `[number]` and end with a semicolon before the reasoning bar.
+- Use `|` to separate the recommendation from its reasoning.
+- Reasoning must reference concrete user responses or metrics.
+- Add a line break after each recommendation.
 
-**完整示例：**
-若系统性红斑狼疮评分为[低]：
+**Example:**
+If systemic lupus erythematosus is rated “Low score�?(meaning high risk):
+Your risk of systemic lupus erythematosus is HIGH
+[1] Limit sun exposure and avoid UV light; | Reasoning: the user frequently works outdoors and UV is a major trigger that worsens lesions
+[2] Keep the immune system stable and avoid supplements that provoke immune overactivity; | Reasoning: lupus is autoimmune in origin, so immune balance lowers flare risk
+[3] Avoid excessive fatigue and secure adequate rest; | Reasoning: heavy workloads reduce immune regulation and increase flare frequency
 
-您患系统性红斑狼疮的风险较高
+Apply this template to every medium/high risk disease—no exceptions.
 
-[1]注意防晒，避免紫外线照射；|推理：您提到经常需要室外站岗，而紫外线是系统性红斑狼疮的重要诱发因素，可能导致病情加重和皮损恶化
-[2]保持免疫力稳定，避免使用可能诱发免疫异常的药物或补品；|推理：系统性红斑狼疮是自身免疫性疾病，免疫系统紊乱是其核心病理机制，维持免疫平衡可降低发病风险
-[3]避免过度劳累，保证充足休息；|推理：您当前的工作强度较大，而疲劳会削弱免疫调节能力，增加疾病发作风险
+## Report Structure (Markdown)
 
-注意，所有86分以下，即中风险和高风险的疾病，一定都要严格按以上格式输出
----
+Before the recommendations, output:
+**-----Final Recommendation Feedback-----**
 
-## 报告结构（使用Markdown格式）
+Then follow this structure:
 
-在给出所有建议前，先输出：
-**-----最终建议反馈-----**
+## Personalized Health Management Report
 
-然后按以下结构输出：
+### Overall Summary
+(Provide a concise evaluation of the user’s current health status.)
 
-## 个性化健康管理建议报告
+### Detailed Analysis
 
-### 整体概述
-（综合评估用户健康状况）
+#### 1. Diet Habits Analysis
+(Discuss dietary patterns, nutrient intake, and any imbalances.)
 
-### 详细分析
+#### 2. Exercise Habits Analysis
+(Cover exercise frequency, intensity, modality, and limitations.)
 
-#### 1. 饮食习惯分析
-（分析用户饮食结构、营养摄入情况）
+### Personalized Recommendations
+(List diseases from highest to lowest risk using the strict format, covering diet, exercise, lifestyle, and mental health.)
 
-#### 2. 运动习惯分析  
-（分析用户运动频率、强度、类型）
-
-### 个性化建议
-（按疾病风险从高到低给出建议，严格使用上述格式）
-（涵盖：饮食习惯、运动规律、作息规律、心理健康等方面）
-
-### 总结与鼓励
-（鼓励用户关注健康，说明如有疑问可进一步咨询）`;
+### Summary and Encouragement
+(Encourage adherence to healthy behaviors and recommend professional consultation if symptoms persist.)`;
 
 
 let currentPrompt = BASE_PROMPT_PREFIX + '{{DISEASE_RISK}}' + BASE_PROMPT_SUFFIX_WITH_COT;
 
 
-async function translateToChinese(englishText) {
-  try {
-    const diseaseList = Object.entries(DISEASE_NAME_MAPPING)
-      .map(([en, zh]) => `${en} = ${zh}`)
-      .join('\n');
-
-    const messages = [{
-      role: 'system',
-      content: `你是一个专业的医学翻译。请将以下英文健康报告翻译成中文，必须严格遵循以下格式要求：
-
-【关键格式要求】
-1. 疾病风险描述必须翻译为："您患[疾病名]的风险较高/较低/中等"
-   例如：Your risk of thyroid toxicosis is HIGH → 您患甲状腺毒症的风险较高
-   
-2. 建议部分必须保持[1][2]编号格式，分号和竖线必须保留：
-   [1]建议内容；|推理：推理内容
-   [2]建议内容；|推理：推理内容
-   
-3. 如果英文文本包含类似结构但格式不对，请重新组织为上述格式
-   例如输入：Your risk of diabetes is HIGH. You should exercise more.
-   输出：您患非胰岛素依赖型糖尿病的风险较高
-        [1]增加运动量；|推理：规律运动有助于控制血糖水平
-
-4. 疾病名称必须使用以下对照表：
-${diseaseList}
-
-5. 风险等级映射：
-   HIGH → 较高
-   MEDIUM → 中等  
-   LOW → 较低
-
-6. 保留"-----最终建议反馈----"这样的标记
-
-【示例】
-输入：Your risk of systemic lupus erythematosus is HIGH. Avoid UV exposure.
-输出：您患系统性红斑狼疮的风险较高
-     [1]注意防晒，避免紫外线；|推理：紫外线是系统性红斑狼疮的重要诱发因素
-
-现在请翻译以下内容：`
-    }, {
-      role: 'user',
-      content: englishText
-    }];
-
-    const completion = await kimiClient.chat.completions.create({
-      model: CONFIG.kimi.model,
-      messages: messages,
-      temperature: 0.1, // 降低温度，让输出更确定
-      max_tokens: 6000
-    });
-
-    return completion.choices[0].message.content;
-  } catch (error) {
-    console.error('翻译成中文失败:', error);
-    return englishText;
-  }
-}
-
-async function translateToEnglish(chineseReport) {
-  try {
-    const diseaseList = Object.entries(DISEASE_NAME_MAPPING)
-      .map(([en, zh]) => `${zh} = ${en}`)
-      .join('\n');
-
-    const messages = [{
-      role: 'system',
-      content: `You are a professional medical translator. Translate the Chinese health report into English with strict format requirements:
-
-【Critical Format Requirements】
-1. Disease risk statements must follow this pattern:
-   您患[疾病]的风险较高 → Your risk of [disease] is HIGH
-   您患[疾病]的风险中等 → Your risk of [disease] is MEDIUM
-   您患[疾病]的风险较低 → Your risk of [disease] is LOW
-
-2. Recommendations MUST preserve ALL three components:
-   [1]建议内容；
-   文献支持: DOI信息
-   推理依据: 推理内容
-   
-   MUST translate to:
-   [1] Recommendation text;
-   Literature Support: DOI information
-   Reasoning: Reasoning text
-
-3. CRITICAL: Do NOT merge "文献支持" and "推理依据" into a single line. Keep them as separate indented lines.
-
-4. Health scores section:
-   ### Your health score: → Keep this header exactly as is
-   Disease names in scores should use English names
-   Format: disease_name: XX/100
-
-5. Disease names must use exact English terms from this mapping: ${diseaseList}
-
-6. Preserve markers like "-----Final Recommendations----"
-
-7. Diet and Exercise Analysis sections:
-   #### 1. 饮食习惯分析 → #### 1. Dietary Habits Analysis
-   #### 2. 运动习惯分析 → #### 2. Exercise Habits Analysis
-
-IMPORTANT: Always preserve the "### Your health score:" section with all scores listed.`
-    }, {
-      role: 'user',
-      content: chineseReport
-    }];
-
-    const completion = await kimiClient.chat.completions.create({
-      model: CONFIG.kimi.model,
-      messages: messages,
-      temperature: 0.1,
-      max_tokens: 6000
-    });
-
-    return completion.choices[0].message.content;
-  } catch (error) {
-    console.error('翻译成英文失败:', error);
-    return chineseReport;
-  }
-}
-
-
-// 初始化 Kimi 客户端
+// 初始�?Kimi 客户�?
 const kimiClient = new OpenAI({
     apiKey: CONFIG.kimi.apiKey,
     baseURL: CONFIG.kimi.baseURL,
 });
 
-// MySQL 连接池
+// MySQL 连接�?
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -371,12 +245,12 @@ const pool = mysql.createPool({
 const PYTHON = 'python3'; // 或绝对路径：'/www/.../venv/bin/python'
 const SCRIPT = path.join(
   __dirname,
-  'longevity_app/backend/predict_cli.py'      // ← 你的脚本完整位置
+  'longevity_app/backend/predict_cli.py'      // �?你的脚本完整位置
 );
 const PYTHON_ENV = path.join(__dirname, 'venv/bin/python3');
 const LIFESTYLE_RISK_SCRIPT = path.join(__dirname, 'calculate_lifestyle_risk.py');
 
-// 存储用户上传的文件路径（用于生活习惯风险计算）
+// 存储用户上传的文件路径（用于生活习惯风险计算�?
 let currentUserFilePath = null;
 
 async function ensurePdfDir() {
@@ -388,9 +262,9 @@ async function ensurePdfDir() {
 }
 ensurePdfDir();
 
-// ============ 2. 改进的处理函数 ============
+// ============ 2. 改进的处理函�?============
 async function processRAGFeedbackWithCOT(answer) {
-  // 检查是否包含RAG关键词
+  // 检查是否包含RAG关键�?
   const foundKeys = [];
   let hasRAGContent = false;
   
@@ -427,13 +301,13 @@ async function processRAGFeedbackWithCOT(answer) {
     const segment = answer.slice(start, end);
     
     const items = [];
-    // 修改正则表达式以捕获建议和推理部分
+    // 修改正则表达式以捕获建议和推理部�?
     const regex = /\[(\d+)\]([^[\]]*?)(?=[;\[]|$)/g;
     let m;
     while ((m = regex.exec(segment)) !== null) {
       const fullContent = m[2].trim();
       
-      // 分离建议和推理（使用竖线分隔）
+      // 分离建议和推理（使用竖线分隔�?
       const parts = fullContent.split('|');
       const suggestion = parts[0].replace(/[;；]$/, '').trim();
       const reasoning = parts[1] ? parts[1].replace(/^推理[:：]/, '').trim() : '';
@@ -447,7 +321,7 @@ async function processRAGFeedbackWithCOT(answer) {
     resultsByKey[key] = items;
   }
   
-  // 重建文本，包含推理
+  // 重建文本，包含推�?
   let rebuilt = prefix;
   
   for (const { key, dataDir, ext } of foundKeys) {
@@ -496,7 +370,7 @@ async function processRAGFeedbackWithCOT(answer) {
 
 
 function runPredictPython(filePathRel) {
-  // 若已是绝对路径则保持，不然拼成绝对
+  // 若已是绝对路径则保持，不然拼成绝�?
   const filePath = path.isAbsolute(filePathRel)
                    ? filePathRel
                    : path.join(__dirname, filePathRel);
@@ -506,7 +380,7 @@ function runPredictPython(filePathRel) {
       PYTHON,
       [SCRIPT, filePath],
       {
-        cwd: path.join(__dirname, 'longevity_app')    // 关键：切到 app 根
+        cwd: path.join(__dirname, 'longevity_app')    // 关键：切�?app �?
       },
       (error, stdout, stderr) => {
         if (stderr) console.error('[PY STDERR]', stderr);
@@ -514,7 +388,7 @@ function runPredictPython(filePathRel) {
 
         try {
           const lastLine = stdout.trim().split('\n').pop();
-          const data     = JSON.parse(lastLine);      // 只解析最后一行 JSON
+          const data     = JSON.parse(lastLine);      // 只解析最后一�?JSON
           resolve(data);
         } catch (e) {
           console.error('解析 Python 输出失败:', stdout);
@@ -526,7 +400,7 @@ function runPredictPython(filePathRel) {
 }
 
 
-// 新增：计算生活习惯风险的函数（传递文件路径，类似runPredictPython）
+// 新增：计算生活习惯风险的函数（传递文件路径，类似runPredictPython�?
 async function calculateLifestyleRisk(filePath) {
   return new Promise((resolve, reject) => {
     console.log('[Lifestyle Risk] 调用Python脚本:', filePath);
@@ -544,14 +418,14 @@ async function calculateLifestyleRisk(filePath) {
         }
         if (error) {
           console.error('计算生活习惯风险失败:', error);
-          return resolve(null); // 失败时返回null，不影响主流程
+          return resolve(null); // 失败时返回null，不影响主流�?
         }
 
         try {
           const lines = stdout.trim().split('\n');
           const lastLine = lines[lines.length - 1];
           const result = JSON.parse(lastLine);
-          console.log('[Lifestyle Risk] 计算成功，找到', result.lifestyle_risks?.length || 0, '个traits');
+          console.log('[Lifestyle Risk] 计算成功，找�?, result.lifestyle_risks?.length || 0, '个traits');
           resolve(result);
         } catch (e) {
           console.error('解析生活习惯风险结果失败:', e);
@@ -563,7 +437,7 @@ async function calculateLifestyleRisk(filePath) {
   });
 }
 
-// 一次性为多个traits生成建议（批量调用，更快）
+// 一次性为多个traits生成建议（批量调用，更快�?
 async function generateAllLifestyleAdvice(traits) {
   try {
     // 构建包含所有traits的prompt
@@ -582,12 +456,12 @@ Please respond in JSON format:
   ...
 }`;
 
-    console.log(`[Lifestyle Advice] 批量生成5个建议...`);
+    console.log(`[Lifestyle Advice] 批量生成5个建�?..`);
 
     const response = await axios.post(
       `${CONFIG.kimi.baseURL}/chat/completions`,
       {
-        model: 'moonshot-v1-8k',  // 使用快速模型
+        model: 'moonshot-v1-8k',  // 使用快速模�?
         messages: [
           { role: 'system', content: 'You are a health advisor providing brief, actionable lifestyle recommendations in English. Always respond in valid JSON format.' },
           { role: 'user', content: prompt }
@@ -609,7 +483,7 @@ Please respond in JSON format:
     // 尝试解析JSON
     let adviceMap = {};
     try {
-      // 提取JSON部分（可能包含在```json```代码块中）
+      // 提取JSON部分（可能包含在```json```代码块中�?
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         adviceMap = JSON.parse(jsonMatch[0]);
@@ -618,7 +492,7 @@ Please respond in JSON format:
       console.error('[Lifestyle Advice] JSON解析失败，使用fallback建议');
     }
 
-    console.log(`[Lifestyle Advice] 批量生成成功，返回 ${Object.keys(adviceMap).length} 个建议`);
+    console.log(`[Lifestyle Advice] 批量生成成功，返�?${Object.keys(adviceMap).length} 个建议`);
     return adviceMap;
 
   } catch (error) {
@@ -627,9 +501,9 @@ Please respond in JSON format:
   }
 }
 
-// 获取单个trait的建议（从批量结果中提取或使用fallback）
+// 获取单个trait的建议（从批量结果中提取或使用fallback�?
 function getAdviceForTrait(traitName, riskLevel, adviceMap) {
-  // 尝试从批量生成的建议中查找
+  // 尝试从批量生成的建议中查�?
   const normalizedName = traitName.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
   for (const key in adviceMap) {
@@ -657,7 +531,7 @@ async function formatLifestyleRiskReport(lifestyleData) {
 
   const risks = lifestyleData.lifestyle_risks;
 
-  // 按照percentile从高到低排序，取前5个
+  // 按照percentile从高到低排序，取�?�?
   const topRisks = risks
     .sort((a, b) => b.percentile - a.percentile)
     .slice(0, 5);
@@ -665,7 +539,7 @@ async function formatLifestyleRiskReport(lifestyleData) {
   let report = '\n\n## Lifestyle Risk Assessment\n\n';
   report += 'Based on your protein expression profile, here are the top 5 lifestyle-related health factors that require attention:\n\n';
 
-  // 批量生成所有5个traits的建议（一次API调用）
+  // 批量生成所�?个traits的建议（一次API调用�?
   const adviceMap = await generateAllLifestyleAdvice(topRisks);
 
   // 为每个trait添加到报告中
@@ -682,8 +556,8 @@ async function formatLifestyleRiskReport(lifestyleData) {
   return report;
 }
 
-// 新增：生成PDF的函数
-// 使用系统Python而不是conda环境，避免权限问题
+// 新增：生成PDF的函�?
+// 使用系统Python而不是conda环境，避免权限问�?
 const PYTHON_ENV2 = '/usr/bin/python3';  // 使用完整路径，避免conda环境干扰
 async function generatePDF(reportContent, userId) {
   try {
@@ -700,7 +574,7 @@ async function generatePDF(reportContent, userId) {
 
     const extraText = `Health Management Report - Generated: ${new Date().toLocaleString('en-US')}`;
 
-    // 使用英文版PDF生成器
+    // 使用英文版PDF生成�?
     await new Promise((resolve, reject) => {
       const args = [PDF_GENERATION_PATH, txtFilePath, pdfFilePath, extraText];
       execFile(
@@ -745,7 +619,7 @@ app.use(express.static('.'));
 
 
 function buildDiseaseRiskText(summary) {
-  // 注意：scoreToLevel 返回的是 “分数，风险”（括号里显示的“低/中/高”为**风险等级**）
+  // 注意：scoreToLevel 返回的是 “分数，风险”（括号里显示的“低/�?高”为**风险等级**�?
   return Object.entries(summary).map(([k, v]) => {
     const code = k.slice(-7);
     const name = DISEASE_DICT[code] || code;
@@ -776,7 +650,7 @@ async function callOpenAI(question) {
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error('OpenAI API 错误:', error.response.data || error.message);
-        return 'OpenAI 暂时无法回答。';
+        return 'OpenAI 暂时无法回答�?;
     }
 }
 
@@ -792,11 +666,11 @@ async function callKimi(question) {
         
         kimiMessages.push({ role: 'user', content: question });
         
-        const messages = [{ role: 'system', content: currentPrompt },      // ← 这里是真正的「流程提示词」
-            ...kimiMessages.slice(-50)];                       // 保留最近 N 条对话
+        const messages = [{ role: 'system', content: currentPrompt },      // �?这里是真正的「流程提示词�?
+            ...kimiMessages.slice(-50)];                       // 保留最�?N 条对�?
 
         
-        console.log("发送给Kimi的消息:", messages);
+        console.log("发送给Kimi的消�?", messages);
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 600000);
@@ -836,10 +710,10 @@ async function callKimi(question) {
         } else if (status === 429) {
           return '请求过于频繁，请稍后再试';
         } else if (status >= 500) {
-          return 'Kimi 服务暂时不可用';
+          return 'Kimi 服务暂时不可�?;
         } else {
           // 其它 4xx 错误
-          return `Kimi 错误：${message}`;
+          return `Kimi 错误�?{message}`;
         }
       }
 }
@@ -876,7 +750,7 @@ app.post('/api/chat', async (req, res) => {
     
     console.log('收到聊天请求:', { question, userId });
     
-    // 1. 获取Kimi的英文回答
+    // 1. 获取Kimi的英文回�?
     let rawAnswer = await (currentModel === 'openai'
       ? callOpenAI(question)
       : callKimi(question));
@@ -885,7 +759,7 @@ app.post('/api/chat', async (req, res) => {
     console.log(rawAnswer);
     console.log('=================\n');
 
-    // 2. 翻译成中文（用于关键词检测和RAG）
+    // 2. 翻译成中文（用于关键词检测和RAG�?
     console.log('开始翻译成中文...');
     const chineseAnswer = await translateToChinese(rawAnswer);
     
@@ -893,7 +767,7 @@ app.post('/api/chat', async (req, res) => {
     console.log(chineseAnswer);
     console.log('===================\n');
 
-    // 3. 使用中文版本进行RAG检索
+    // 3. 使用中文版本进行RAG检�?
     console.log('开始RAG处理...');
     const ragResult = await processRAGFeedbackWithCOT(chineseAnswer);
     
@@ -908,7 +782,7 @@ app.post('/api/chat', async (req, res) => {
     
     console.log('=== RAG处理后的中文 ===');
     console.log(processedChineseAnswer);
-    console.log('是否为最终报告:', isFinalReport);
+    console.log('是否为最终报�?', isFinalReport);
     console.log('======================\n');
     
     let pdfInfo = null;
@@ -916,13 +790,13 @@ app.post('/api/chat', async (req, res) => {
 
     // 4. 如果是最终报告，添加健康分数并翻译回英文
     if (isFinalReport) {
-      console.log('检测到最终报告，开始添加健康分数...');
+      console.log('检测到最终报告，开始添加健康分�?..');
 
       // Add health scores to the Chinese report first
       if (currentSummary) {
         const healthScoresSection = formatHealthScores(currentSummary);
         // Add scores before the final summary section
-        const finalMarker = '### 总结与鼓励';
+        const finalMarker = '### 总结与鼓�?;
         if (processedChineseAnswer.includes(finalMarker)) {
           processedChineseAnswer = processedChineseAnswer.replace(
             finalMarker,
@@ -952,13 +826,13 @@ app.post('/api/chat', async (req, res) => {
         }
       }
 
-      // 计算并添加生活习惯风险评估
+      // 计算并添加生活习惯风险评�?
       if (currentUserFilePath) {
         console.log('开始计算生活习惯风险，文件路径:', currentUserFilePath);
         const lifestyleRiskData = await calculateLifestyleRisk(currentUserFilePath);
 
         if (lifestyleRiskData && lifestyleRiskData.success) {
-          console.log('生活习惯风险计算成功，添加到报告中...');
+          console.log('生活习惯风险计算成功，添加到报告�?..');
           const lifestyleReport = await formatLifestyleRiskReport(lifestyleRiskData);
 
           // 将生活习惯风险报告添加到疾病风险报告之后，总结之前
@@ -969,7 +843,7 @@ app.post('/api/chat', async (req, res) => {
               lifestyleReport + '\n' + summaryMarker
             );
           } else {
-            // 如果没有找到总结标记，就添加到最后
+            // 如果没有找到总结标记，就添加到最�?
             finalEnglishReport += lifestyleReport;
           }
         } else {
@@ -979,7 +853,7 @@ app.post('/api/chat', async (req, res) => {
         console.log('警告：没有用户文件路径，跳过生活习惯风险计算');
       }
 
-      console.log('=== 最终英文报告 ===');
+      console.log('=== 最终英文报�?===');
       console.log(finalEnglishReport);
       console.log('===================\n');
 
@@ -994,7 +868,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     if (!finalEnglishReport || finalEnglishReport.trim() === '') {
-      console.error('警告：最终英文回答为空');
+      console.error('警告：最终英文回答为�?);
       finalEnglishReport = 'Sorry, I am temporarily unable to generate a response. Please try again later.';
     }
 
@@ -1025,18 +899,18 @@ app.get('/api/download-pdf/:filename', async (req, res) => {
     
     const filePath = path.join(PDF_OUTPUT_DIR, filename);
     
-    // 检查文件是否存在
+    // 检查文件是否存�?
     try {
       await fs.access(filePath);
     } catch {
-      return res.status(404).json({ error: '文件不存在' });
+      return res.status(404).json({ error: '文件不存�? });
     }
     
-    // 设置响应头
+    // 设置响应�?
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     
-    // 发送文件
+    // 发送文�?
     res.sendFile(filePath);
     
   } catch (error) {
@@ -1076,7 +950,7 @@ app.get('/api/pdf-history/:userId', async (req, res) => {
   }
 });
 
-// 添加静态文件服务（如果需要直接访问PDF）
+// 添加静态文件服务（如果需要直接访问PDF�?
 app.use('/pdfs', express.static(PDF_OUTPUT_DIR));
 
 
@@ -1087,7 +961,7 @@ app.post('/api/update-prompt', (req, res) => {
         currentPrompt = prompt;
         res.json({ success: true, message: '提示词已更新' });
     } else {
-        res.status(400).json({ error: '提示词不能为空' });
+        res.status(400).json({ error: '提示词不能为�? });
     }
 });
 
@@ -1098,7 +972,7 @@ app.post('/api/switch-model', (req, res) => {
         currentModel = model;
         res.json({ success: true, message: `已切换到 ${model} 模型` });
     } else {
-        res.status(400).json({ error: '无效的模型名称' });
+        res.status(400).json({ error: '无效的模型名�? });
     }
 });
 
@@ -1107,11 +981,11 @@ app.post('/api/new-chat', (req, res) => {
     try {
         // 清空对话历史
         kimiMessages = [];
-        console.log('对话历史已重置');
-        res.json({ success: true, message: '已开始新的对话' });
+        console.log('对话历史已重�?);
+        res.json({ success: true, message: '已开始新的对�? });
     } catch (error) {
         res.status(500).json({ 
-            error: '创建新会话失败',
+            error: '创建新会话失�?,
             details: error.message
         });
     }
@@ -1120,7 +994,7 @@ app.post('/api/new-chat', (req, res) => {
 app.post('/api/register', async (req, res) => {
   const { phone, password, age, gender } = req.body;
   if (!/^1\d{10}$/.test(phone) || !password) {
-    return res.status(400).json({ error: '手机号或密码格式不正确!!!' });
+    return res.status(400).json({ error: '手机号或密码格式不正�?!!' });
   }
 
   // 验证年龄和性别
@@ -1133,7 +1007,7 @@ app.post('/api/register', async (req, res) => {
 
   try {
     const [rows] = await pool.query('SELECT id FROM users WHERE phone=?', [phone]);
-    if (rows.length) return res.status(409).json({ error: '账号已存在' });
+    if (rows.length) return res.status(409).json({ error: '账号已存�? });
 
     const hash = await bcrypt.hash(password, 10);
     await pool.query(
@@ -1143,7 +1017,7 @@ app.post('/api/register', async (req, res) => {
     res.json({ success: true, message: '注册成功' });
   } catch (e) {
     console.error('注册错误:', e);
-    res.status(500).json({ error: '数据库错误' });
+    res.status(500).json({ error: '数据库错�? });
   }
 });
 
@@ -1151,14 +1025,14 @@ app.post('/api/login', async (req, res) => {
   const { phone, password } = req.body;
   try {
     const [rows] = await pool.query('SELECT id, password FROM users WHERE phone=?', [phone]);
-    if (!rows.length) return res.status(401).json({ error: '账号不存在' });
+    if (!rows.length) return res.status(401).json({ error: '账号不存�? });
 
     const match = await bcrypt.compare(password, rows[0].password);
     if (!match) return res.status(401).json({ error: '密码错误' });
 
     res.json({ success: true, userId: rows[0].id });
   } catch (e) {
-    res.status(500).json({ error: '数据库错误' });
+    res.status(500).json({ error: '数据库错�? });
   }
 });
 
@@ -1166,19 +1040,19 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/use-sample-file', async (req, res) => {
   const { userId } = req.body;
 
-  // 服务器上的示例文件路径
+  // 服务器上的示例文件路�?
   const SAMPLE_FILE_PATH = '/www/wwwroot/www.longevityllmpumc.com/sample_file/date_test_7_11.xlsx';
 
   const conn = await pool.getConnection();
   try {
-    // 检查示例文件是否存在
+    // 检查示例文件是否存�?
     try {
       await fs.access(SAMPLE_FILE_PATH);
     } catch {
-      return res.status(404).json({ error: '示例文件不存在' });
+      return res.status(404).json({ error: '示例文件不存�? });
     }
 
-    // 创建一个临时副本用于处理（避免修改原始示例文件）
+    // 创建一个临时副本用于处理（避免修改原始示例文件�?
     const tempFileName = `sample_${Date.now()}_date_test_7_11.xlsx`;
     const tempFilePath = path.join('/www/wwwroot/www.longevityllmpumc.com/uploads/', tempFileName);
     await fs.copyFile(SAMPLE_FILE_PATH, tempFilePath);
@@ -1190,15 +1064,15 @@ app.post('/api/use-sample-file', async (req, res) => {
     );
     const srcFileId = result.insertId;
 
-    // CRITICAL: 在疾病预测之前，先复制原始文件用于生活习惯风险计算
+    // CRITICAL: 在疾病预测之前，先复制原始文件用于生活习惯风险计�?
     const originalFilePath = tempFilePath.replace('.xlsx', '_original.xlsx');
     await fs.copyFile(tempFilePath, originalFilePath);
     console.log('备份原始文件:', originalFilePath);
 
-    // 使用上传的文件进行疾病预测（这个文件可能会被修改）
+    // 使用上传的文件进行疾病预测（这个文件可能会被修改�?
     const { resultPath, summary } = await runPredictPython(tempFilePath);
 
-    // 保存备份的原始文件路径（用于生活习惯风险计算）
+    // 保存备份的原始文件路径（用于生活习惯风险计算�?
     currentUserFilePath = originalFilePath;
     console.log('保存原始文件路径用于生活习惯风险计算:', currentUserFilePath);
 
@@ -1208,13 +1082,13 @@ app.post('/api/use-sample-file', async (req, res) => {
     const mustCoverList = mustCover.map((n,i)=>`${i+1}. ${n}`).join('\n');
     const diseaseRiskText = buildDiseaseRiskText(summary);
     const HARD_REQUIRE =
-    `\n\n### 必须逐一覆盖的疾病清单（评分<86）
+    `\n\n### 必须逐一覆盖的疾病清单（评分<86�?
     ${mustCoverList}
 
-    - 上述每个疾病 **都必须** 输出一段：
+    - 上述每个疾病 **都必�?* 输出一段：
       - 标题行：您患___的风险较___
-      - 至少3条 [编号] 建议，每条都含 "文献支持/推理依据"（若无文献，可空占位）
-    - 若任何一个疾病未覆盖，回答 **无效**，请继续生成，直至全部疾病覆盖完成。`;
+      - 至少3�?[编号] 建议，每条都�?"文献支持/推理依据"（若无文献，可空占位�?
+    - 若任何一个疾病未覆盖，回�?**无效**，请继续生成，直至全部疾病覆盖完成。`;
 
     currentPrompt = BASE_PROMPT_PREFIX + buildDiseaseRiskText(summary) + BASE_PROMPT_SUFFIX_WITH_COT + HARD_REQUIRE;
     console.log('[DEBUG] 使用示例文件，更新提示词');
@@ -1235,7 +1109,7 @@ app.post('/api/use-sample-file', async (req, res) => {
     });
   } catch (e) {
     console.error('使用示例文件错误:', e);
-    res.status(500).json({ error: '服务器处理失败' });
+    res.status(500).json({ error: '服务器处理失�? });
   } finally {
     conn.release();
   }
@@ -1253,17 +1127,17 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     );
     const srcFileId = result.insertId;
 
-    // CRITICAL: 在疾病预测之前，先复制原始文件用于生活习惯风险计算
+    // CRITICAL: 在疾病预测之前，先复制原始文件用于生活习惯风险计�?
     // 因为疾病预测脚本会修改原始文件，导致生活习惯风险计算读取到错误的数据
     const originalFilePath = req.file.path.replace('.xlsx', '_original.xlsx');
     await fs.copyFile(req.file.path, originalFilePath);
     console.log('备份原始文件:', originalFilePath);
 
-    // 使用上传的文件进行疾病预测（这个文件可能会被修改）
+    // 使用上传的文件进行疾病预测（这个文件可能会被修改�?
     const { resultPath, summary } = await runPredictPython(req.file.path);
 
-    // 保存备份的原始文件路径（用于生活习惯风险计算）
-    // 这个文件保持825列不变，不会被疾病预测脚本修改
+    // 保存备份的原始文件路径（用于生活习惯风险计算�?
+    // 这个文件保持825列不变，不会被疾病预测脚本修�?
     currentUserFilePath = originalFilePath;
     console.log('保存原始文件路径用于生活习惯风险计算:', currentUserFilePath);
     
@@ -1273,13 +1147,13 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     const mustCoverList = mustCover.map((n,i)=>`${i+1}. ${n}`).join('\n');
     const diseaseRiskText = buildDiseaseRiskText(summary);
     const HARD_REQUIRE =
-    `\n\n### 必须逐一覆盖的疾病清单（评分<86）
+    `\n\n### 必须逐一覆盖的疾病清单（评分<86�?
     ${mustCoverList}
     
-    - 上述每个疾病 **都必须** 输出一段：
+    - 上述每个疾病 **都必�?* 输出一段：
       - 标题行：您患___的风险较___
-      - 至少3条 [编号] 建议，每条都含 “文献支持/推理依据”（若无文献，可空占位）
-    - 若任何一个疾病未覆盖，回答 **无效**，请继续生成，直至全部疾病覆盖完成。`;
+      - 至少3�?[编号] 建议，每条都�?“文献支�?推理依据”（若无文献，可空占位）
+    - 若任何一个疾病未覆盖，回�?**无效**，请继续生成，直至全部疾病覆盖完成。`;
     
     currentPrompt = BASE_PROMPT_PREFIX + buildDiseaseRiskText(summary) + BASE_PROMPT_SUFFIX_WITH_COT + HARD_REQUIRE;
     console.log('[DEBUG] 更新提示词，疾病风险文本:', diseaseRiskText);
@@ -1300,7 +1174,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     });
   } catch (e) {
     console.error('上传处理错误:', e);
-    res.status(500).json({ error: '服务器处理失败' });
+    res.status(500).json({ error: '服务器处理失�? });
   } finally {
     conn.release();
   }
@@ -1311,23 +1185,23 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 function scoreToRisk(score) {
   const s = Number
 (score);
-  if (s <= 60) return '高';     // 风险高
-  if (s <= 85) return '中';     // 风险中
-  return '低';                  // 风险低（86+）
+  if (s <= 60) return '�?;     // 风险�?
+  if (s <= 85) return '�?;     // 风险�?
+  return '�?;                  // 风险低（86+�?
 }
 
-// 按你的需求：返回 “分数，风险”
+// 按你的需求：返回 “分数，风险�?
 function scoreToLevel(score) {
   const s = Math.round(Number
 (score));
   const risk = scoreToRisk
 (s);
-  return `${s}，${risk}`;       // 例如 "59，低"（表示分数59，对应风险“低/中/高”）
+  return `${s}�?{risk}`;       // 例如 "59，低"（表示分�?9，对应风险“低/�?高”）
 }
 
 
-// 不要用 '.'，显式指定静态目录（按你的项目结构改）
-app.use(express.static(path.join(__dirname))); // 或 public、dist 等
+// 不要�?'.'，显式指定静态目录（按你的项目结构改�?
+app.use(express.static(path.join(__dirname))); // �?public、dist �?
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
