@@ -18,7 +18,7 @@ logging.basicConfig(
 
 BASE_DIR = Path(__file__).resolve().parent
 UPLOAD_FOLDER = BASE_DIR / "uploads"
-SERVER_MODEL_DIR = Path("/www/wwwroot/www.longevityllmpumc.com/models/17_models")
+SERVER_MODEL_DIR = Path("17_models")
 LOCAL_MODEL_DIR = BASE_DIR / "models"
 
 app = Flask(__name__)
