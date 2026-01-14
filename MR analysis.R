@@ -29,9 +29,9 @@ suppressPackageStartupMessages({
 # Keeping file paths and key parameters in a single list makes it easy to
 # rerun the pipeline in a different environment or share it with collaborators.
 config <- list(
-  outcome_path = "D:/MR/pheno_all/90th_pregwas.txt",  # Outcome GWAS summary stats
-  exposure_dir = "X:/UKB_all_LD",                     # Directory containing exposure files
-  output_dir = "D:/MR",                               # Base directory for Excel outputs
+  outcome_path = "90th_pregwas.txt",  # Outcome GWAS summary stats
+  exposure_dir = "UKB_all_LD",                     # Directory containing exposure files
+  output_dir = "MR",                               # Base directory for Excel outputs
   bonferroni_alpha = 0.05 / 3000,                     # Family-wise error threshold
   final_outcome_label = "99th"                        # Label used in downstream tables
 )
