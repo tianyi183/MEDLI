@@ -89,6 +89,7 @@ spec.loader.exec_module(module)
 
 - Paths in the R scripts point to local drives (e.g., `D:/MR/...`, `X:/UKB_all_LD`). Update them to match your environment.
 - Ensure proteomics/demographic/follow-up files conform to the column expectations described in the data-prep script.
+- UK Biobank Pharma Proteomics Project (UKB-PPP) was accessed on DATE from https://registry.opendata.aws/ukbppp. UKB data are available through a procedure described at https://www.ukbiobank.ac.uk/enable-your-research. FinnGen data can be accessed through Fingenious services (https://site.fingenious.fi/en/) managed by FINBB. CHARGE Longevity 1000 Genomes Meta-analysis database can be download from https://www.longevitygenomics.org/downloads. MR instrumental variables (IVs) full list is available at zenodo (https://doi.org/10.5281/zenodo.17874970).
 
 ## Output Artifacts
 
