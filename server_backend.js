@@ -16,8 +16,8 @@ app.use(express.urlencoded({ extended: false }));
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
-const SCRIPT_PATH = '/www/wwwroot/www.longevityllmpumc.com/7_22_datlist/ragmodel_select_code.py';
-const PDF_GENERATION_PATH = '/www/wwwroot/www.longevityllmpumc.com/PDF_generation/pdfGeneration.py';
+const SCRIPT_PATH = 'ragmodel_select_code.py';
+const PDF_GENERATION_PATH = 'pdfGeneration.py';
 const PDF_OUTPUT_DIR = path.join(__dirname, 'generated_pdfs');
 
 
@@ -92,7 +92,7 @@ Object.entries(DISEASE_NAME_MAPPING).forEach(([en, zh]) => {
 
 
 const storage = multer.diskStorage({
-  destination: '/www/wwwroot/www.longevityllmpumc.com/uploads/', // directory for uploaded files
+  destination: 'uploads/', // directory for uploaded files
   filename: (req, file, cb) => {
     // Example: 1720685243123_data_test_7_11.xlsx
     const unique = Date.now() + '_' + file.originalname;
@@ -131,7 +131,7 @@ const BASE_PROMPT_PREFIX =
 `You are an AI health-management specialist with formal medical training.
 
 ## Language Rules
-If the user’s first response is in English, keep the entire conversation in English.
+If the userâ€™s first response is in English, keep the entire conversation in English.
 
 ## Interview Flow
 The user begins by describing symptoms. Ask questions in this order:
@@ -143,7 +143,7 @@ The user begins by describing symptoms. Ask questions in this order:
 4. Smoking status
 
 ### Free-form rounds (3-5)
-Adjust the number of rounds based on the longevity score (higher score �?fewer rounds). Choose among:
+Adjust the number of rounds based on the longevity score (higher score â†?fewer rounds). Choose among:
 - Current health concerns and symptoms (pain, fatigue, dizziness, etc.)
 - Symptom onset time, frequency, and duration
 - Weight changes, sleep quality, bowel/bladder status
@@ -158,10 +158,10 @@ Once questioning ends, immediately move on to the recommendation output regardle
 
 ## Additional Notes
 - Speak like a human physician and never reveal you are an AI assistant.
-- Follow the prescribed number of rounds—no more, no fewer.
+- Follow the prescribed number of roundsâ€”no more, no fewer.
 - Combine initial symptoms with interview findings when reasoning.
 
-The patient’s disease-risk details are as follows:`;
+The patientâ€™s disease-risk details are as follows:`;
 
 const BASE_PROMPT_SUFFIX_WITH_COT = `
 ## Output Requirements
@@ -179,7 +179,7 @@ Your risk of ___ is ___ (High/Medium/Low).
 
 **Recommendations (at least three):**
 [1] Recommendation text; | Reasoning: tie the advice to specific user facts
-[2] Recommendation text; | Reasoning: reference the user’s metrics or habits
+[2] Recommendation text; | Reasoning: reference the userâ€™s metrics or habits
 [3] Recommendation text; | Reasoning: explain why the recommendation is necessary
 
 **Formatting guidelines:**
@@ -189,13 +189,13 @@ Your risk of ___ is ___ (High/Medium/Low).
 - Add a line break after each recommendation.
 
 **Example:**
-If systemic lupus erythematosus is rated “Low score�?(meaning high risk):
+If systemic lupus erythematosus is rated â€œLow scoreâ€?(meaning high risk):
 Your risk of systemic lupus erythematosus is HIGH
 [1] Limit sun exposure and avoid UV light; | Reasoning: the user frequently works outdoors and UV is a major trigger that worsens lesions
 [2] Keep the immune system stable and avoid supplements that provoke immune overactivity; | Reasoning: lupus is autoimmune in origin, so immune balance lowers flare risk
 [3] Avoid excessive fatigue and secure adequate rest; | Reasoning: heavy workloads reduce immune regulation and increase flare frequency
 
-Apply this template to every medium/high risk disease—no exceptions.
+Apply this template to every medium/high risk diseaseâ€”no exceptions.
 
 ## Report Structure (Markdown)
 
@@ -207,7 +207,7 @@ Then follow this structure:
 ## Personalized Health Management Report
 
 ### Overall Summary
-(Provide a concise evaluation of the user’s current health status.)
+(Provide a concise evaluation of the userâ€™s current health status.)
 
 ### Detailed Analysis
 
@@ -227,13 +227,13 @@ Then follow this structure:
 let currentPrompt = BASE_PROMPT_PREFIX + '{{DISEASE_RISK}}' + BASE_PROMPT_SUFFIX_WITH_COT;
 
 
-// 初始�?Kimi 客户�?
+// åˆå§‹åŒ?Kimi å®¢æˆ·ç«?
 const kimiClient = new OpenAI({
     apiKey: CONFIG.kimi.apiKey,
     baseURL: CONFIG.kimi.baseURL,
 });
 
-// MySQL 连接�?
+// MySQL è¿žæŽ¥æ±?
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -242,29 +242,29 @@ const pool = mysql.createPool({
 });
 
 
-const PYTHON = 'python3'; // 或绝对路径：'/www/.../venv/bin/python'
+const PYTHON = 'python3'; // æˆ–ç»å¯¹è·¯å¾„ï¼š'/www/.../venv/bin/python'
 const SCRIPT = path.join(
   __dirname,
-  'longevity_app/backend/predict_cli.py'      // �?你的脚本完整位置
+  'predict_cli.py'      // â†?ä½ çš„è„šæœ¬å®Œæ•´ä½ç½®
 );
 const PYTHON_ENV = path.join(__dirname, 'venv/bin/python3');
 const LIFESTYLE_RISK_SCRIPT = path.join(__dirname, 'calculate_lifestyle_risk.py');
 
-// 存储用户上传的文件路径（用于生活习惯风险计算�?
+// å­˜å‚¨ç”¨æˆ·ä¸Šä¼ çš„æ–‡ä»¶è·¯å¾„ï¼ˆç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—ï¼?
 let currentUserFilePath = null;
 
 async function ensurePdfDir() {
   try {
     await fs.mkdir(PDF_OUTPUT_DIR, { recursive: true });
   } catch (err) {
-    console.error('创建PDF目录失败:', err);
+    console.error('åˆ›å»ºPDFç›®å½•å¤±è´¥:', err);
   }
 }
 ensurePdfDir();
 
-// ============ 2. 改进的处理函�?============
+// ============ 2. æ”¹è¿›çš„å¤„ç†å‡½æ•?============
 async function processRAGFeedbackWithCOT(answer) {
-  // 检查是否包含RAG关键�?
+  // æ£€æŸ¥æ˜¯å¦åŒ…å«RAGå…³é”®è¯?
   const foundKeys = [];
   let hasRAGContent = false;
   
@@ -292,7 +292,7 @@ async function processRAGFeedbackWithCOT(answer) {
   const firstKeyIdx = foundKeys[0].idx;
   const prefix = answer.slice(0, firstKeyIdx);
   
-  // 解析每个疾病的建议和推理
+  // è§£æžæ¯ä¸ªç–¾ç—…çš„å»ºè®®å’ŒæŽ¨ç†
   const resultsByKey = {};
   for (let i = 0; i < foundKeys.length; i++) {
     const { key, idx } = foundKeys[i];
@@ -301,16 +301,16 @@ async function processRAGFeedbackWithCOT(answer) {
     const segment = answer.slice(start, end);
     
     const items = [];
-    // 修改正则表达式以捕获建议和推理部�?
+    // ä¿®æ”¹æ­£åˆ™è¡¨è¾¾å¼ä»¥æ•èŽ·å»ºè®®å’ŒæŽ¨ç†éƒ¨åˆ?
     const regex = /\[(\d+)\]([^[\]]*?)(?=[;\[]|$)/g;
     let m;
     while ((m = regex.exec(segment)) !== null) {
       const fullContent = m[2].trim();
       
-      // 分离建议和推理（使用竖线分隔�?
+      // åˆ†ç¦»å»ºè®®å’ŒæŽ¨ç†ï¼ˆä½¿ç”¨ç«–çº¿åˆ†éš”ï¼?
       const parts = fullContent.split('|');
-      const suggestion = parts[0].replace(/[;；]$/, '').trim();
-      const reasoning = parts[1] ? parts[1].replace(/^推理[:：]/, '').trim() : '';
+      const suggestion = parts[0].replace(/[;ï¼›]$/, '').trim();
+      const reasoning = parts[1] ? parts[1].replace(/^æŽ¨ç†[:ï¼š]/, '').trim() : '';
       
       items.push({ 
         num: m[1], 
@@ -321,7 +321,7 @@ async function processRAGFeedbackWithCOT(answer) {
     resultsByKey[key] = items;
   }
   
-  // 重建文本，包含推�?
+  // é‡å»ºæ–‡æœ¬ï¼ŒåŒ…å«æŽ¨ç?
   let rebuilt = prefix;
   
   for (const { key, dataDir, ext } of foundKeys) {
@@ -329,10 +329,10 @@ async function processRAGFeedbackWithCOT(answer) {
     const items = resultsByKey[key] || [];
     
     for (const { num, content, reasoning } of items) {
-      // 添加建议
+      // æ·»åŠ å»ºè®®
       rebuilt += `[${num}] ${content};\n`;
       
-      // 获取文献支持
+      // èŽ·å–æ–‡çŒ®æ”¯æŒ
       const escaped = content.replace(/(["\\$`])/g, '\\$1');
       const cmd = `${PYTHON_ENV} ${SCRIPT_PATH} "${dataDir}" "${escaped}"`;
       let pyOut;
@@ -344,16 +344,16 @@ async function processRAGFeedbackWithCOT(answer) {
         });
         pyOut = stdout.trim();
       } catch {
-        pyOut = '（检索出错）';
+        pyOut = 'ï¼ˆæ£€ç´¢å‡ºé”™ï¼‰';
       }
       
-      if (pyOut && pyOut !== '（检索出错）') {
-        rebuilt += `   文献支持: ${pyOut}\n`;
+      if (pyOut && pyOut !== 'ï¼ˆæ£€ç´¢å‡ºé”™ï¼‰') {
+        rebuilt += `   æ–‡çŒ®æ”¯æŒ: ${pyOut}\n`;
       }
       
-      // 添加推理解释
+      // æ·»åŠ æŽ¨ç†è§£é‡Š
       if (reasoning) {
-        rebuilt += `   推理依据: ${reasoning}\n`;
+        rebuilt += `   æŽ¨ç†ä¾æ®: ${reasoning}\n`;
       }
       
       rebuilt += '\n';
@@ -370,7 +370,7 @@ async function processRAGFeedbackWithCOT(answer) {
 
 
 function runPredictPython(filePathRel) {
-  // 若已是绝对路径则保持，不然拼成绝�?
+  // è‹¥å·²æ˜¯ç»å¯¹è·¯å¾„åˆ™ä¿æŒï¼Œä¸ç„¶æ‹¼æˆç»å¯?
   const filePath = path.isAbsolute(filePathRel)
                    ? filePathRel
                    : path.join(__dirname, filePathRel);
@@ -380,7 +380,7 @@ function runPredictPython(filePathRel) {
       PYTHON,
       [SCRIPT, filePath],
       {
-        cwd: path.join(__dirname, 'longevity_app')    // 关键：切�?app �?
+        cwd: path.join(__dirname, 'longevity_app')    // å…³é”®ï¼šåˆ‡åˆ?app æ ?
       },
       (error, stdout, stderr) => {
         if (stderr) console.error('[PY STDERR]', stderr);
@@ -388,10 +388,10 @@ function runPredictPython(filePathRel) {
 
         try {
           const lastLine = stdout.trim().split('\n').pop();
-          const data     = JSON.parse(lastLine);      // 只解析最后一�?JSON
+          const data     = JSON.parse(lastLine);      // åªè§£æžæœ€åŽä¸€è¡?JSON
           resolve(data);
         } catch (e) {
-          console.error('解析 Python 输出失败:', stdout);
+          console.error('è§£æž Python è¾“å‡ºå¤±è´¥:', stdout);
           reject(e);
         }
       }
@@ -400,10 +400,10 @@ function runPredictPython(filePathRel) {
 }
 
 
-// 新增：计算生活习惯风险的函数（传递文件路径，类似runPredictPython�?
+// æ–°å¢žï¼šè®¡ç®—ç”Ÿæ´»ä¹ æƒ¯é£Žé™©çš„å‡½æ•°ï¼ˆä¼ é€’æ–‡ä»¶è·¯å¾„ï¼Œç±»ä¼¼runPredictPythonï¼?
 async function calculateLifestyleRisk(filePath) {
   return new Promise((resolve, reject) => {
-    console.log('[Lifestyle Risk] 调用Python脚本:', filePath);
+    console.log('[Lifestyle Risk] è°ƒç”¨Pythonè„šæœ¬:', filePath);
 
     execFile(
       PYTHON_ENV2,
@@ -417,19 +417,19 @@ async function calculateLifestyleRisk(filePath) {
           console.log('[Lifestyle Risk STDERR]', stderr);
         }
         if (error) {
-          console.error('计算生活习惯风险失败:', error);
-          return resolve(null); // 失败时返回null，不影响主流�?
+          console.error('è®¡ç®—ç”Ÿæ´»ä¹ æƒ¯é£Žé™©å¤±è´¥:', error);
+          return resolve(null); // å¤±è´¥æ—¶è¿”å›žnullï¼Œä¸å½±å“ä¸»æµç¨?
         }
 
         try {
           const lines = stdout.trim().split('\n');
           const lastLine = lines[lines.length - 1];
           const result = JSON.parse(lastLine);
-          console.log('[Lifestyle Risk] 计算成功，找�?, result.lifestyle_risks?.length || 0, '个traits');
+          console.log('[Lifestyle Risk] è®¡ç®—æˆåŠŸï¼Œæ‰¾åˆ?, result.lifestyle_risks?.length || 0, 'ä¸ªtraits');
           resolve(result);
         } catch (e) {
-          console.error('解析生活习惯风险结果失败:', e);
-          console.error('Python输出:', stdout);
+          console.error('è§£æžç”Ÿæ´»ä¹ æƒ¯é£Žé™©ç»“æžœå¤±è´¥:', e);
+          console.error('Pythonè¾“å‡º:', stdout);
           resolve(null);
         }
       }
@@ -437,10 +437,10 @@ async function calculateLifestyleRisk(filePath) {
   });
 }
 
-// 一次性为多个traits生成建议（批量调用，更快�?
+// ä¸€æ¬¡æ€§ä¸ºå¤šä¸ªtraitsç”Ÿæˆå»ºè®®ï¼ˆæ‰¹é‡è°ƒç”¨ï¼Œæ›´å¿«ï¼?
 async function generateAllLifestyleAdvice(traits) {
   try {
-    // 构建包含所有traits的prompt
+    // æž„å»ºåŒ…å«æ‰€æœ‰traitsçš„prompt
     const traitsList = traits.map((t, idx) =>
       `${idx + 1}. ${t.trait} (Percentile: ${t.percentile}th, Risk: ${t.health_risk})`
     ).join('\n');
@@ -456,12 +456,12 @@ Please respond in JSON format:
   ...
 }`;
 
-    console.log(`[Lifestyle Advice] 批量生成5个建�?..`);
+    console.log(`[Lifestyle Advice] æ‰¹é‡ç”Ÿæˆ5ä¸ªå»ºè®?..`);
 
     const response = await axios.post(
       `${CONFIG.kimi.baseURL}/chat/completions`,
       {
-        model: 'moonshot-v1-8k',  // 使用快速模�?
+        model: 'moonshot-v1-8k',  // ä½¿ç”¨å¿«é€Ÿæ¨¡åž?
         messages: [
           { role: 'system', content: 'You are a health advisor providing brief, actionable lifestyle recommendations in English. Always respond in valid JSON format.' },
           { role: 'user', content: prompt }
@@ -474,36 +474,36 @@ Please respond in JSON format:
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${CONFIG.kimi.apiKey}`,
         },
-        timeout: 20000, // 20秒超时（批量处理需要更多时间）
+        timeout: 20000, // 20ç§’è¶…æ—¶ï¼ˆæ‰¹é‡å¤„ç†éœ€è¦æ›´å¤šæ—¶é—´ï¼‰
       }
     );
 
     const content = response.data.choices[0].message.content.trim();
 
-    // 尝试解析JSON
+    // å°è¯•è§£æžJSON
     let adviceMap = {};
     try {
-      // 提取JSON部分（可能包含在```json```代码块中�?
+      // æå–JSONéƒ¨åˆ†ï¼ˆå¯èƒ½åŒ…å«åœ¨```json```ä»£ç å—ä¸­ï¼?
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         adviceMap = JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.error('[Lifestyle Advice] JSON解析失败，使用fallback建议');
+      console.error('[Lifestyle Advice] JSONè§£æžå¤±è´¥ï¼Œä½¿ç”¨fallbackå»ºè®®');
     }
 
-    console.log(`[Lifestyle Advice] 批量生成成功，返�?${Object.keys(adviceMap).length} 个建议`);
+    console.log(`[Lifestyle Advice] æ‰¹é‡ç”ŸæˆæˆåŠŸï¼Œè¿”å›?${Object.keys(adviceMap).length} ä¸ªå»ºè®®`);
     return adviceMap;
 
   } catch (error) {
-    console.error(`[Lifestyle Advice] 批量生成失败:`, error.message);
-    return {}; // 返回空对象，使用fallback
+    console.error(`[Lifestyle Advice] æ‰¹é‡ç”Ÿæˆå¤±è´¥:`, error.message);
+    return {}; // è¿”å›žç©ºå¯¹è±¡ï¼Œä½¿ç”¨fallback
   }
 }
 
-// 获取单个trait的建议（从批量结果中提取或使用fallback�?
+// èŽ·å–å•ä¸ªtraitçš„å»ºè®®ï¼ˆä»Žæ‰¹é‡ç»“æžœä¸­æå–æˆ–ä½¿ç”¨fallbackï¼?
 function getAdviceForTrait(traitName, riskLevel, adviceMap) {
-  // 尝试从批量生成的建议中查�?
+  // å°è¯•ä»Žæ‰¹é‡ç”Ÿæˆçš„å»ºè®®ä¸­æŸ¥æ‰?
   const normalizedName = traitName.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
   for (const key in adviceMap) {
@@ -513,7 +513,7 @@ function getAdviceForTrait(traitName, riskLevel, adviceMap) {
     }
   }
 
-  // Fallback建议
+  // Fallbackå»ºè®®
   if (riskLevel === 'high') {
     return 'This factor shows elevated levels. Consider consulting with a healthcare professional for personalized guidance.';
   } else if (riskLevel === 'medium') {
@@ -523,7 +523,7 @@ function getAdviceForTrait(traitName, riskLevel, adviceMap) {
   }
 }
 
-// 格式化生活习惯风险报告（英文版）- 只显示前5个percentile最高的
+// æ ¼å¼åŒ–ç”Ÿæ´»ä¹ æƒ¯é£Žé™©æŠ¥å‘Šï¼ˆè‹±æ–‡ç‰ˆï¼‰- åªæ˜¾ç¤ºå‰5ä¸ªpercentileæœ€é«˜çš„
 async function formatLifestyleRiskReport(lifestyleData) {
   if (!lifestyleData || !lifestyleData.success || !lifestyleData.lifestyle_risks) {
     return '';
@@ -531,7 +531,7 @@ async function formatLifestyleRiskReport(lifestyleData) {
 
   const risks = lifestyleData.lifestyle_risks;
 
-  // 按照percentile从高到低排序，取�?�?
+  // æŒ‰ç…§percentileä»Žé«˜åˆ°ä½ŽæŽ’åºï¼Œå–å‰?ä¸?
   const topRisks = risks
     .sort((a, b) => b.percentile - a.percentile)
     .slice(0, 5);
@@ -539,10 +539,10 @@ async function formatLifestyleRiskReport(lifestyleData) {
   let report = '\n\n## Lifestyle Risk Assessment\n\n';
   report += 'Based on your protein expression profile, here are the top 5 lifestyle-related health factors that require attention:\n\n';
 
-  // 批量生成所�?个traits的建议（一次API调用�?
+  // æ‰¹é‡ç”Ÿæˆæ‰€æœ?ä¸ªtraitsçš„å»ºè®®ï¼ˆä¸€æ¬¡APIè°ƒç”¨ï¼?
   const adviceMap = await generateAllLifestyleAdvice(topRisks);
 
-  // 为每个trait添加到报告中
+  // ä¸ºæ¯ä¸ªtraitæ·»åŠ åˆ°æŠ¥å‘Šä¸­
   for (const risk of topRisks) {
     const percentileDecimal = (risk.percentile / 100).toFixed(2);
     const advice = getAdviceForTrait(risk.trait, risk.health_risk, adviceMap);
@@ -556,9 +556,9 @@ async function formatLifestyleRiskReport(lifestyleData) {
   return report;
 }
 
-// 新增：生成PDF的函�?
-// 使用系统Python而不是conda环境，避免权限问�?
-const PYTHON_ENV2 = '/usr/bin/python3';  // 使用完整路径，避免conda环境干扰
+// æ–°å¢žï¼šç”ŸæˆPDFçš„å‡½æ•?
+// ä½¿ç”¨ç³»ç»ŸPythonè€Œä¸æ˜¯condaçŽ¯å¢ƒï¼Œé¿å…æƒé™é—®é¢?
+const PYTHON_ENV2 = '/usr/bin/python3';  // ä½¿ç”¨å®Œæ•´è·¯å¾„ï¼Œé¿å…condaçŽ¯å¢ƒå¹²æ‰°
 async function generatePDF(reportContent, userId) {
   try {
     await fs.mkdir(PDF_OUTPUT_DIR, { recursive: true });
@@ -574,7 +574,7 @@ async function generatePDF(reportContent, userId) {
 
     const extraText = `Health Management Report - Generated: ${new Date().toLocaleString('en-US')}`;
 
-    // 使用英文版PDF生成�?
+    // ä½¿ç”¨è‹±æ–‡ç‰ˆPDFç”Ÿæˆå™?
     await new Promise((resolve, reject) => {
       const args = [PDF_GENERATION_PATH, txtFilePath, pdfFilePath, extraText];
       execFile(
@@ -607,7 +607,7 @@ async function generatePDF(reportContent, userId) {
 
     return { success: true, pdfPath: pdfFilePath, pdfUrl: `/api/download-pdf/${pdfFileName}` };
   } catch (error) {
-    console.error('生成PDF失败:', error);
+    console.error('ç”ŸæˆPDFå¤±è´¥:', error);
     return { success: false, error: error.message };
   }
 }
@@ -619,7 +619,7 @@ app.use(express.static('.'));
 
 
 function buildDiseaseRiskText(summary) {
-  // 注意：scoreToLevel 返回的是 “分数，风险”（括号里显示的“低/�?高”为**风险等级**�?
+  // æ³¨æ„ï¼šscoreToLevel è¿”å›žçš„æ˜¯ â€œåˆ†æ•°ï¼Œé£Žé™©â€ï¼ˆæ‹¬å·é‡Œæ˜¾ç¤ºçš„â€œä½Ž/ä¸?é«˜â€ä¸º**é£Žé™©ç­‰çº§**ï¼?
   return Object.entries(summary).map(([k, v]) => {
     const code = k.slice(-7);
     const name = DISEASE_DICT[code] || code;
@@ -627,7 +627,7 @@ function buildDiseaseRiskText(summary) {
   }).join(' ');
 }
 
-// 调用 OpenAI API
+// è°ƒç”¨ OpenAI API
 async function callOpenAI(question) {
     try {
         const response = await axios.post(
@@ -649,12 +649,12 @@ async function callOpenAI(question) {
         );
         return response.data.choices[0].message.content;
     } catch (error) {
-        console.error('OpenAI API 错误:', error.response.data || error.message);
-        return 'OpenAI 暂时无法回答�?;
+        console.error('OpenAI API é”™è¯¯:', error.response.data || error.message);
+        return 'OpenAI æš‚æ—¶æ— æ³•å›žç­”ã€?;
     }
 }
 
-// 调用 Kimi API（支持多轮对话）
+// è°ƒç”¨ Kimi APIï¼ˆæ”¯æŒå¤šè½®å¯¹è¯ï¼‰
 async function callKimi(question) {
     try {
         if (!kimiMessages) kimiMessages = [];
@@ -666,15 +666,15 @@ async function callKimi(question) {
         
         kimiMessages.push({ role: 'user', content: question });
         
-        const messages = [{ role: 'system', content: currentPrompt },      // �?这里是真正的「流程提示词�?
-            ...kimiMessages.slice(-50)];                       // 保留最�?N 条对�?
+        const messages = [{ role: 'system', content: currentPrompt },      // â†?è¿™é‡Œæ˜¯çœŸæ­£çš„ã€Œæµç¨‹æç¤ºè¯ã€?
+            ...kimiMessages.slice(-50)];                       // ä¿ç•™æœ€è¿?N æ¡å¯¹è¯?
 
         
-        console.log("发送给Kimi的消�?", messages);
+        console.log("å‘é€ç»™Kimiçš„æ¶ˆæ?", messages);
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 600000);
-        console.log('[KIMI ►] messages:', messages);
+        console.log('[KIMI â–º] messages:', messages);
         const completion = await kimiClient.chat.completions.create({
             model: CONFIG.kimi.model || "kimi-thinking-preview",
             messages: messages,
@@ -683,11 +683,11 @@ async function callKimi(question) {
         }, {
             signal: controller.signal
         });
-        console.log('[KIMI ◄] full completion:', completion);
+        console.log('[KIMI â—„] full completion:', completion);
         clearTimeout(timeoutId);
         
         if (!completion.choices[0].message.content) {
-            throw new Error("Kimi 返回了空响应");
+            throw new Error("Kimi è¿”å›žäº†ç©ºå“åº”");
         }
         
         const assistantMessage = completion.choices[0].message;
@@ -700,20 +700,20 @@ async function callKimi(question) {
         return assistantMessage.content;
         
     } catch (error) {
-        console.error('Kimi API 错误详情:', error);
+        console.error('Kimi API é”™è¯¯è¯¦æƒ…:', error);
     
         const status = error.response?.status;
         const message = error.response?.data?.error?.message || error.message;
     
         if (!error.response) {
-          return 'Kimi 暂时无法回答，请稍后再试';
+          return 'Kimi æš‚æ—¶æ— æ³•å›žç­”ï¼Œè¯·ç¨åŽå†è¯•';
         } else if (status === 429) {
-          return '请求过于频繁，请稍后再试';
+          return 'è¯·æ±‚è¿‡äºŽé¢‘ç¹ï¼Œè¯·ç¨åŽå†è¯•';
         } else if (status >= 500) {
-          return 'Kimi 服务暂时不可�?;
+          return 'Kimi æœåŠ¡æš‚æ—¶ä¸å¯ç”?;
         } else {
-          // 其它 4xx 错误
-          return `Kimi 错误�?{message}`;
+          // å…¶å®ƒ 4xx é”™è¯¯
+          return `Kimi é”™è¯¯ï¼?{message}`;
         }
       }
 }
@@ -748,27 +748,27 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { question, userId } = req.body;
     
-    console.log('收到聊天请求:', { question, userId });
+    console.log('æ”¶åˆ°èŠå¤©è¯·æ±‚:', { question, userId });
     
-    // 1. 获取Kimi的英文回�?
+    // 1. èŽ·å–Kimiçš„è‹±æ–‡å›žç­?
     let rawAnswer = await (currentModel === 'openai'
       ? callOpenAI(question)
       : callKimi(question));
     
-    console.log('=== AI原始回复 ===');
+    console.log('=== AIåŽŸå§‹å›žå¤ ===');
     console.log(rawAnswer);
     console.log('=================\n');
 
-    // 2. 翻译成中文（用于关键词检测和RAG�?
-    console.log('开始翻译成中文...');
+    // 2. ç¿»è¯‘æˆä¸­æ–‡ï¼ˆç”¨äºŽå…³é”®è¯æ£€æµ‹å’ŒRAGï¼?
+    console.log('å¼€å§‹ç¿»è¯‘æˆä¸­æ–‡...');
     const chineseAnswer = await translateToChinese(rawAnswer);
     
-    console.log('=== 中文翻译结果 ===');
+    console.log('=== ä¸­æ–‡ç¿»è¯‘ç»“æžœ ===');
     console.log(chineseAnswer);
     console.log('===================\n');
 
-    // 3. 使用中文版本进行RAG检�?
-    console.log('开始RAG处理...');
+    // 3. ä½¿ç”¨ä¸­æ–‡ç‰ˆæœ¬è¿›è¡ŒRAGæ£€ç´?
+    console.log('å¼€å§‹RAGå¤„ç†...');
     const ragResult = await processRAGFeedbackWithCOT(chineseAnswer);
     
     let processedChineseAnswer, isFinalReport;
@@ -780,23 +780,23 @@ app.post('/api/chat', async (req, res) => {
       isFinalReport = false;
     }
     
-    console.log('=== RAG处理后的中文 ===');
+    console.log('=== RAGå¤„ç†åŽçš„ä¸­æ–‡ ===');
     console.log(processedChineseAnswer);
-    console.log('是否为最终报�?', isFinalReport);
+    console.log('æ˜¯å¦ä¸ºæœ€ç»ˆæŠ¥å‘?', isFinalReport);
     console.log('======================\n');
     
     let pdfInfo = null;
     let finalEnglishReport = rawAnswer;
 
-    // 4. 如果是最终报告，添加健康分数并翻译回英文
+    // 4. å¦‚æžœæ˜¯æœ€ç»ˆæŠ¥å‘Šï¼Œæ·»åŠ å¥åº·åˆ†æ•°å¹¶ç¿»è¯‘å›žè‹±æ–‡
     if (isFinalReport) {
-      console.log('检测到最终报告，开始添加健康分�?..');
+      console.log('æ£€æµ‹åˆ°æœ€ç»ˆæŠ¥å‘Šï¼Œå¼€å§‹æ·»åŠ å¥åº·åˆ†æ•?..');
 
       // Add health scores to the Chinese report first
       if (currentSummary) {
         const healthScoresSection = formatHealthScores(currentSummary);
         // Add scores before the final summary section
-        const finalMarker = '### 总结与鼓�?;
+        const finalMarker = '### æ€»ç»“ä¸Žé¼“åŠ?;
         if (processedChineseAnswer.includes(finalMarker)) {
           processedChineseAnswer = processedChineseAnswer.replace(
             finalMarker,
@@ -808,7 +808,7 @@ app.post('/api/chat', async (req, res) => {
         }
       }
 
-      console.log('开始翻译成英文...');
+      console.log('å¼€å§‹ç¿»è¯‘æˆè‹±æ–‡...');
       finalEnglishReport = await translateToEnglish(processedChineseAnswer);
 
       // Ensure health scores are in the English report
@@ -826,16 +826,16 @@ app.post('/api/chat', async (req, res) => {
         }
       }
 
-      // 计算并添加生活习惯风险评�?
+      // è®¡ç®—å¹¶æ·»åŠ ç”Ÿæ´»ä¹ æƒ¯é£Žé™©è¯„ä¼?
       if (currentUserFilePath) {
-        console.log('开始计算生活习惯风险，文件路径:', currentUserFilePath);
+        console.log('å¼€å§‹è®¡ç®—ç”Ÿæ´»ä¹ æƒ¯é£Žé™©ï¼Œæ–‡ä»¶è·¯å¾„:', currentUserFilePath);
         const lifestyleRiskData = await calculateLifestyleRisk(currentUserFilePath);
 
         if (lifestyleRiskData && lifestyleRiskData.success) {
-          console.log('生活习惯风险计算成功，添加到报告�?..');
+          console.log('ç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—æˆåŠŸï¼Œæ·»åŠ åˆ°æŠ¥å‘Šä¸?..');
           const lifestyleReport = await formatLifestyleRiskReport(lifestyleRiskData);
 
-          // 将生活习惯风险报告添加到疾病风险报告之后，总结之前
+          // å°†ç”Ÿæ´»ä¹ æƒ¯é£Žé™©æŠ¥å‘Šæ·»åŠ åˆ°ç–¾ç—…é£Žé™©æŠ¥å‘Šä¹‹åŽï¼Œæ€»ç»“ä¹‹å‰
           const summaryMarker = '### Summary and Encouragement';
           if (finalEnglishReport.includes(summaryMarker)) {
             finalEnglishReport = finalEnglishReport.replace(
@@ -843,32 +843,32 @@ app.post('/api/chat', async (req, res) => {
               lifestyleReport + '\n' + summaryMarker
             );
           } else {
-            // 如果没有找到总结标记，就添加到最�?
+            // å¦‚æžœæ²¡æœ‰æ‰¾åˆ°æ€»ç»“æ ‡è®°ï¼Œå°±æ·»åŠ åˆ°æœ€å?
             finalEnglishReport += lifestyleReport;
           }
         } else {
-          console.log('生活习惯风险计算失败或无数据');
+          console.log('ç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—å¤±è´¥æˆ–æ— æ•°æ®');
         }
       } else {
-        console.log('警告：没有用户文件路径，跳过生活习惯风险计算');
+        console.log('è­¦å‘Šï¼šæ²¡æœ‰ç”¨æˆ·æ–‡ä»¶è·¯å¾„ï¼Œè·³è¿‡ç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—');
       }
 
-      console.log('=== 最终英文报�?===');
+      console.log('=== æœ€ç»ˆè‹±æ–‡æŠ¥å‘?===');
       console.log(finalEnglishReport);
       console.log('===================\n');
 
-      // 生成英文PDF
+      // ç”Ÿæˆè‹±æ–‡PDF
       pdfInfo = await generatePDF(finalEnglishReport, userId);
       
       if (!pdfInfo.success) {
-        console.error('PDF生成失败:', pdfInfo.error);
+        console.error('PDFç”Ÿæˆå¤±è´¥:', pdfInfo.error);
       } else {
-        console.log('PDF生成成功:', pdfInfo.pdfUrl);
+        console.log('PDFç”ŸæˆæˆåŠŸ:', pdfInfo.pdfUrl);
       }
     }
 
     if (!finalEnglishReport || finalEnglishReport.trim() === '') {
-      console.error('警告：最终英文回答为�?);
+      console.error('è­¦å‘Šï¼šæœ€ç»ˆè‹±æ–‡å›žç­”ä¸ºç©?);
       finalEnglishReport = 'Sorry, I am temporarily unable to generate a response. Please try again later.';
     }
 
@@ -879,7 +879,7 @@ app.post('/api/chat', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('聊天API错误:', error);
+    console.error('èŠå¤©APIé”™è¯¯:', error);
     res.status(500).json({ 
       error: 'Server error',
       message: error.message 
@@ -887,39 +887,39 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// 新增：PDF下载端点
+// æ–°å¢žï¼šPDFä¸‹è½½ç«¯ç‚¹
 app.get('/api/download-pdf/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
     
-    // 安全性检查：防止路径遍历
+    // å®‰å…¨æ€§æ£€æŸ¥ï¼šé˜²æ­¢è·¯å¾„éåŽ†
     if (filename.includes('..') || filename.includes('/')) {
-      return res.status(400).json({ error: '无效的文件名' });
+      return res.status(400).json({ error: 'æ— æ•ˆçš„æ–‡ä»¶å' });
     }
     
     const filePath = path.join(PDF_OUTPUT_DIR, filename);
     
-    // 检查文件是否存�?
+    // æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ?
     try {
       await fs.access(filePath);
     } catch {
-      return res.status(404).json({ error: '文件不存�? });
+      return res.status(404).json({ error: 'æ–‡ä»¶ä¸å­˜åœ? });
     }
     
-    // 设置响应�?
+    // è®¾ç½®å“åº”å¤?
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     
-    // 发送文�?
+    // å‘é€æ–‡ä»?
     res.sendFile(filePath);
     
   } catch (error) {
-    console.error('下载PDF失败:', error);
-    res.status(500).json({ error: '下载失败' });
+    console.error('ä¸‹è½½PDFå¤±è´¥:', error);
+    res.status(500).json({ error: 'ä¸‹è½½å¤±è´¥' });
   }
 });
 
-// 新增：获取用户的历史PDF报告列表
+// æ–°å¢žï¼šèŽ·å–ç”¨æˆ·çš„åŽ†å²PDFæŠ¥å‘Šåˆ—è¡¨
 app.get('/api/pdf-history/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -945,12 +945,12 @@ app.get('/api/pdf-history/:userId', async (req, res) => {
     }
     
   } catch (error) {
-    console.error('获取PDF历史失败:', error);
-    res.status(500).json({ error: '获取历史失败' });
+    console.error('èŽ·å–PDFåŽ†å²å¤±è´¥:', error);
+    res.status(500).json({ error: 'èŽ·å–åŽ†å²å¤±è´¥' });
   }
 });
 
-// 添加静态文件服务（如果需要直接访问PDF�?
+// æ·»åŠ é™æ€æ–‡ä»¶æœåŠ¡ï¼ˆå¦‚æžœéœ€è¦ç›´æŽ¥è®¿é—®PDFï¼?
 app.use('/pdfs', express.static(PDF_OUTPUT_DIR));
 
 
@@ -959,9 +959,9 @@ app.post('/api/update-prompt', (req, res) => {
     const { prompt } = req.body;
     if (prompt) {
         currentPrompt = prompt;
-        res.json({ success: true, message: '提示词已更新' });
+        res.json({ success: true, message: 'æç¤ºè¯å·²æ›´æ–°' });
     } else {
-        res.status(400).json({ error: '提示词不能为�? });
+        res.status(400).json({ error: 'æç¤ºè¯ä¸èƒ½ä¸ºç©? });
     }
 });
 
@@ -970,22 +970,22 @@ app.post('/api/switch-model', (req, res) => {
     const { model } = req.body;
     if (['openai', 'kimi'].includes(model)) {
         currentModel = model;
-        res.json({ success: true, message: `已切换到 ${model} 模型` });
+        res.json({ success: true, message: `å·²åˆ‡æ¢åˆ° ${model} æ¨¡åž‹` });
     } else {
-        res.status(400).json({ error: '无效的模型名�? });
+        res.status(400).json({ error: 'æ— æ•ˆçš„æ¨¡åž‹åç§? });
     }
 });
 
-// 新增：新建对话API端点
+// æ–°å¢žï¼šæ–°å»ºå¯¹è¯APIç«¯ç‚¹
 app.post('/api/new-chat', (req, res) => {
     try {
-        // 清空对话历史
+        // æ¸…ç©ºå¯¹è¯åŽ†å²
         kimiMessages = [];
-        console.log('对话历史已重�?);
-        res.json({ success: true, message: '已开始新的对�? });
+        console.log('å¯¹è¯åŽ†å²å·²é‡ç½?);
+        res.json({ success: true, message: 'å·²å¼€å§‹æ–°çš„å¯¹è¯? });
     } catch (error) {
         res.status(500).json({ 
-            error: '创建新会话失�?,
+            error: 'åˆ›å»ºæ–°ä¼šè¯å¤±è´?,
             details: error.message
         });
     }
@@ -994,30 +994,30 @@ app.post('/api/new-chat', (req, res) => {
 app.post('/api/register', async (req, res) => {
   const { phone, password, age, gender } = req.body;
   if (!/^1\d{10}$/.test(phone) || !password) {
-    return res.status(400).json({ error: '手机号或密码格式不正�?!!' });
+    return res.status(400).json({ error: 'æ‰‹æœºå·æˆ–å¯†ç æ ¼å¼ä¸æ­£ç¡?!!' });
   }
 
-  // 验证年龄和性别
+  // éªŒè¯å¹´é¾„å’Œæ€§åˆ«
   if (!age || age < 1 || age > 150) {
-    return res.status(400).json({ error: '请输入有效的年龄 (1-150)' });
+    return res.status(400).json({ error: 'è¯·è¾“å…¥æœ‰æ•ˆçš„å¹´é¾„ (1-150)' });
   }
   if (!gender || gender.trim() === '') {
-    return res.status(400).json({ error: '性别不能为空' });
+    return res.status(400).json({ error: 'æ€§åˆ«ä¸èƒ½ä¸ºç©º' });
   }
 
   try {
     const [rows] = await pool.query('SELECT id FROM users WHERE phone=?', [phone]);
-    if (rows.length) return res.status(409).json({ error: '账号已存�? });
+    if (rows.length) return res.status(409).json({ error: 'è´¦å·å·²å­˜åœ? });
 
     const hash = await bcrypt.hash(password, 10);
     await pool.query(
       'INSERT INTO users (phone, password, age, gender) VALUES (?, ?, ?, ?)',
       [phone, hash, age, gender]
     );
-    res.json({ success: true, message: '注册成功' });
+    res.json({ success: true, message: 'æ³¨å†ŒæˆåŠŸ' });
   } catch (e) {
-    console.error('注册错误:', e);
-    res.status(500).json({ error: '数据库错�? });
+    console.error('æ³¨å†Œé”™è¯¯:', e);
+    res.status(500).json({ error: 'æ•°æ®åº“é”™è¯? });
   }
 });
 
@@ -1025,56 +1025,56 @@ app.post('/api/login', async (req, res) => {
   const { phone, password } = req.body;
   try {
     const [rows] = await pool.query('SELECT id, password FROM users WHERE phone=?', [phone]);
-    if (!rows.length) return res.status(401).json({ error: '账号不存�? });
+    if (!rows.length) return res.status(401).json({ error: 'è´¦å·ä¸å­˜åœ? });
 
     const match = await bcrypt.compare(password, rows[0].password);
-    if (!match) return res.status(401).json({ error: '密码错误' });
+    if (!match) return res.status(401).json({ error: 'å¯†ç é”™è¯¯' });
 
     res.json({ success: true, userId: rows[0].id });
   } catch (e) {
-    res.status(500).json({ error: '数据库错�? });
+    res.status(500).json({ error: 'æ•°æ®åº“é”™è¯? });
   }
 });
 
-// 新增：使用示例文件的API端点
+// æ–°å¢žï¼šä½¿ç”¨ç¤ºä¾‹æ–‡ä»¶çš„APIç«¯ç‚¹
 app.post('/api/use-sample-file', async (req, res) => {
   const { userId } = req.body;
 
-  // 服务器上的示例文件路�?
-  const SAMPLE_FILE_PATH = '/www/wwwroot/www.longevityllmpumc.com/sample_file/date_test_7_11.xlsx';
+  // æœåŠ¡å™¨ä¸Šçš„ç¤ºä¾‹æ–‡ä»¶è·¯å¾?
+  const SAMPLE_FILE_PATH = 'date_test_7_11.xlsx';
 
   const conn = await pool.getConnection();
   try {
-    // 检查示例文件是否存�?
+    // æ£€æŸ¥ç¤ºä¾‹æ–‡ä»¶æ˜¯å¦å­˜åœ?
     try {
       await fs.access(SAMPLE_FILE_PATH);
     } catch {
-      return res.status(404).json({ error: '示例文件不存�? });
+      return res.status(404).json({ error: 'ç¤ºä¾‹æ–‡ä»¶ä¸å­˜åœ? });
     }
 
-    // 创建一个临时副本用于处理（避免修改原始示例文件�?
+    // åˆ›å»ºä¸€ä¸ªä¸´æ—¶å‰¯æœ¬ç”¨äºŽå¤„ç†ï¼ˆé¿å…ä¿®æ”¹åŽŸå§‹ç¤ºä¾‹æ–‡ä»¶ï¼?
     const tempFileName = `sample_${Date.now()}_date_test_7_11.xlsx`;
-    const tempFilePath = path.join('/www/wwwroot/www.longevityllmpumc.com/uploads/', tempFileName);
+    const tempFilePath = path.join('uploads/', tempFileName);
     await fs.copyFile(SAMPLE_FILE_PATH, tempFilePath);
 
-    // 记录到数据库
+    // è®°å½•åˆ°æ•°æ®åº“
     const [result] = await conn.query(
       'INSERT INTO user_files (user_id, file_path) VALUES (?, ?)',
       [userId, tempFilePath]
     );
     const srcFileId = result.insertId;
 
-    // CRITICAL: 在疾病预测之前，先复制原始文件用于生活习惯风险计�?
+    // CRITICAL: åœ¨ç–¾ç—…é¢„æµ‹ä¹‹å‰ï¼Œå…ˆå¤åˆ¶åŽŸå§‹æ–‡ä»¶ç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®?
     const originalFilePath = tempFilePath.replace('.xlsx', '_original.xlsx');
     await fs.copyFile(tempFilePath, originalFilePath);
-    console.log('备份原始文件:', originalFilePath);
+    console.log('å¤‡ä»½åŽŸå§‹æ–‡ä»¶:', originalFilePath);
 
-    // 使用上传的文件进行疾病预测（这个文件可能会被修改�?
+    // ä½¿ç”¨ä¸Šä¼ çš„æ–‡ä»¶è¿›è¡Œç–¾ç—…é¢„æµ‹ï¼ˆè¿™ä¸ªæ–‡ä»¶å¯èƒ½ä¼šè¢«ä¿®æ”¹ï¼?
     const { resultPath, summary } = await runPredictPython(tempFilePath);
 
-    // 保存备份的原始文件路径（用于生活习惯风险计算�?
+    // ä¿å­˜å¤‡ä»½çš„åŽŸå§‹æ–‡ä»¶è·¯å¾„ï¼ˆç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—ï¼?
     currentUserFilePath = originalFilePath;
-    console.log('保存原始文件路径用于生活习惯风险计算:', currentUserFilePath);
+    console.log('ä¿å­˜åŽŸå§‹æ–‡ä»¶è·¯å¾„ç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—:', currentUserFilePath);
 
     // Store summary globally
     currentSummary = summary;
@@ -1082,16 +1082,16 @@ app.post('/api/use-sample-file', async (req, res) => {
     const mustCoverList = mustCover.map((n,i)=>`${i+1}. ${n}`).join('\n');
     const diseaseRiskText = buildDiseaseRiskText(summary);
     const HARD_REQUIRE =
-    `\n\n### 必须逐一覆盖的疾病清单（评分<86�?
+    `\n\n### å¿…é¡»é€ä¸€è¦†ç›–çš„ç–¾ç—…æ¸…å•ï¼ˆè¯„åˆ†<86ï¼?
     ${mustCoverList}
 
-    - 上述每个疾病 **都必�?* 输出一段：
-      - 标题行：您患___的风险较___
-      - 至少3�?[编号] 建议，每条都�?"文献支持/推理依据"（若无文献，可空占位�?
-    - 若任何一个疾病未覆盖，回�?**无效**，请继续生成，直至全部疾病覆盖完成。`;
+    - ä¸Šè¿°æ¯ä¸ªç–¾ç—… **éƒ½å¿…é¡?* è¾“å‡ºä¸€æ®µï¼š
+      - æ ‡é¢˜è¡Œï¼šæ‚¨æ‚£___çš„é£Žé™©è¾ƒ___
+      - è‡³å°‘3æ?[ç¼–å·] å»ºè®®ï¼Œæ¯æ¡éƒ½å?"æ–‡çŒ®æ”¯æŒ/æŽ¨ç†ä¾æ®"ï¼ˆè‹¥æ— æ–‡çŒ®ï¼Œå¯ç©ºå ä½ï¼?
+    - è‹¥ä»»ä½•ä¸€ä¸ªç–¾ç—…æœªè¦†ç›–ï¼Œå›žç­?**æ— æ•ˆ**ï¼Œè¯·ç»§ç»­ç”Ÿæˆï¼Œç›´è‡³å…¨éƒ¨ç–¾ç—…è¦†ç›–å®Œæˆã€‚`;
 
     currentPrompt = BASE_PROMPT_PREFIX + buildDiseaseRiskText(summary) + BASE_PROMPT_SUFFIX_WITH_COT + HARD_REQUIRE;
-    console.log('[DEBUG] 使用示例文件，更新提示词');
+    console.log('[DEBUG] ä½¿ç”¨ç¤ºä¾‹æ–‡ä»¶ï¼Œæ›´æ–°æç¤ºè¯');
 
     await conn.query(
       `INSERT INTO prediction_results
@@ -1102,14 +1102,14 @@ app.post('/api/use-sample-file', async (req, res) => {
 
     res.json({
       success: true,
-      message: '示例文件加载成功',
+      message: 'ç¤ºä¾‹æ–‡ä»¶åŠ è½½æˆåŠŸ',
       srcFileId,
       resultPath,
       summary
     });
   } catch (e) {
-    console.error('使用示例文件错误:', e);
-    res.status(500).json({ error: '服务器处理失�? });
+    console.error('ä½¿ç”¨ç¤ºä¾‹æ–‡ä»¶é”™è¯¯:', e);
+    res.status(500).json({ error: 'æœåŠ¡å™¨å¤„ç†å¤±è´? });
   } finally {
     conn.release();
   }
@@ -1117,7 +1117,7 @@ app.post('/api/use-sample-file', async (req, res) => {
 
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   const { userId } = req.body;
-  if (!req.file) return res.status(400).json({ error: '未检测到文件' });
+  if (!req.file) return res.status(400).json({ error: 'æœªæ£€æµ‹åˆ°æ–‡ä»¶' });
 
   const conn = await pool.getConnection();
   try {
@@ -1127,19 +1127,19 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     );
     const srcFileId = result.insertId;
 
-    // CRITICAL: 在疾病预测之前，先复制原始文件用于生活习惯风险计�?
-    // 因为疾病预测脚本会修改原始文件，导致生活习惯风险计算读取到错误的数据
+    // CRITICAL: åœ¨ç–¾ç—…é¢„æµ‹ä¹‹å‰ï¼Œå…ˆå¤åˆ¶åŽŸå§‹æ–‡ä»¶ç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®?
+    // å› ä¸ºç–¾ç—…é¢„æµ‹è„šæœ¬ä¼šä¿®æ”¹åŽŸå§‹æ–‡ä»¶ï¼Œå¯¼è‡´ç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—è¯»å–åˆ°é”™è¯¯çš„æ•°æ®
     const originalFilePath = req.file.path.replace('.xlsx', '_original.xlsx');
     await fs.copyFile(req.file.path, originalFilePath);
-    console.log('备份原始文件:', originalFilePath);
+    console.log('å¤‡ä»½åŽŸå§‹æ–‡ä»¶:', originalFilePath);
 
-    // 使用上传的文件进行疾病预测（这个文件可能会被修改�?
+    // ä½¿ç”¨ä¸Šä¼ çš„æ–‡ä»¶è¿›è¡Œç–¾ç—…é¢„æµ‹ï¼ˆè¿™ä¸ªæ–‡ä»¶å¯èƒ½ä¼šè¢«ä¿®æ”¹ï¼?
     const { resultPath, summary } = await runPredictPython(req.file.path);
 
-    // 保存备份的原始文件路径（用于生活习惯风险计算�?
-    // 这个文件保持825列不变，不会被疾病预测脚本修�?
+    // ä¿å­˜å¤‡ä»½çš„åŽŸå§‹æ–‡ä»¶è·¯å¾„ï¼ˆç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—ï¼?
+    // è¿™ä¸ªæ–‡ä»¶ä¿æŒ825åˆ—ä¸å˜ï¼Œä¸ä¼šè¢«ç–¾ç—…é¢„æµ‹è„šæœ¬ä¿®æ”?
     currentUserFilePath = originalFilePath;
-    console.log('保存原始文件路径用于生活习惯风险计算:', currentUserFilePath);
+    console.log('ä¿å­˜åŽŸå§‹æ–‡ä»¶è·¯å¾„ç”¨äºŽç”Ÿæ´»ä¹ æƒ¯é£Žé™©è®¡ç®—:', currentUserFilePath);
     
     // Store summary globally
     currentSummary = summary;
@@ -1147,16 +1147,16 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     const mustCoverList = mustCover.map((n,i)=>`${i+1}. ${n}`).join('\n');
     const diseaseRiskText = buildDiseaseRiskText(summary);
     const HARD_REQUIRE =
-    `\n\n### 必须逐一覆盖的疾病清单（评分<86�?
+    `\n\n### å¿…é¡»é€ä¸€è¦†ç›–çš„ç–¾ç—…æ¸…å•ï¼ˆè¯„åˆ†<86ï¼?
     ${mustCoverList}
     
-    - 上述每个疾病 **都必�?* 输出一段：
-      - 标题行：您患___的风险较___
-      - 至少3�?[编号] 建议，每条都�?“文献支�?推理依据”（若无文献，可空占位）
-    - 若任何一个疾病未覆盖，回�?**无效**，请继续生成，直至全部疾病覆盖完成。`;
+    - ä¸Šè¿°æ¯ä¸ªç–¾ç—… **éƒ½å¿…é¡?* è¾“å‡ºä¸€æ®µï¼š
+      - æ ‡é¢˜è¡Œï¼šæ‚¨æ‚£___çš„é£Žé™©è¾ƒ___
+      - è‡³å°‘3æ?[ç¼–å·] å»ºè®®ï¼Œæ¯æ¡éƒ½å?â€œæ–‡çŒ®æ”¯æŒ?æŽ¨ç†ä¾æ®â€ï¼ˆè‹¥æ— æ–‡çŒ®ï¼Œå¯ç©ºå ä½ï¼‰
+    - è‹¥ä»»ä½•ä¸€ä¸ªç–¾ç—…æœªè¦†ç›–ï¼Œå›žç­?**æ— æ•ˆ**ï¼Œè¯·ç»§ç»­ç”Ÿæˆï¼Œç›´è‡³å…¨éƒ¨ç–¾ç—…è¦†ç›–å®Œæˆã€‚`;
     
     currentPrompt = BASE_PROMPT_PREFIX + buildDiseaseRiskText(summary) + BASE_PROMPT_SUFFIX_WITH_COT + HARD_REQUIRE;
-    console.log('[DEBUG] 更新提示词，疾病风险文本:', diseaseRiskText);
+    console.log('[DEBUG] æ›´æ–°æç¤ºè¯ï¼Œç–¾ç—…é£Žé™©æ–‡æœ¬:', diseaseRiskText);
     
     await conn.query(
       `INSERT INTO prediction_results
@@ -1167,41 +1167,41 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
     res.json({
       success: true,
-      message: '文件上传成功',
+      message: 'æ–‡ä»¶ä¸Šä¼ æˆåŠŸ',
       srcFileId,
       resultPath,
       summary
     });
   } catch (e) {
-    console.error('上传处理错误:', e);
-    res.status(500).json({ error: '服务器处理失�? });
+    console.error('ä¸Šä¼ å¤„ç†é”™è¯¯:', e);
+    res.status(500).json({ error: 'æœåŠ¡å™¨å¤„ç†å¤±è´? });
   } finally {
     conn.release();
   }
 });
 
 
-// 将分数映射为“风险等级”（注意：分高→风险低）
+// å°†åˆ†æ•°æ˜ å°„ä¸ºâ€œé£Žé™©ç­‰çº§â€ï¼ˆæ³¨æ„ï¼šåˆ†é«˜â†’é£Žé™©ä½Žï¼‰
 function scoreToRisk(score) {
   const s = Number
 (score);
-  if (s <= 60) return '�?;     // 风险�?
-  if (s <= 85) return '�?;     // 风险�?
-  return '�?;                  // 风险低（86+�?
+  if (s <= 60) return 'é«?;     // é£Žé™©é«?
+  if (s <= 85) return 'ä¸?;     // é£Žé™©ä¸?
+  return 'ä½?;                  // é£Žé™©ä½Žï¼ˆ86+ï¼?
 }
 
-// 按你的需求：返回 “分数，风险�?
+// æŒ‰ä½ çš„éœ€æ±‚ï¼šè¿”å›ž â€œåˆ†æ•°ï¼Œé£Žé™©â€?
 function scoreToLevel(score) {
   const s = Math.round(Number
 (score));
   const risk = scoreToRisk
 (s);
-  return `${s}�?{risk}`;       // 例如 "59，低"（表示分�?9，对应风险“低/�?高”）
+  return `${s}ï¼?{risk}`;       // ä¾‹å¦‚ "59ï¼Œä½Ž"ï¼ˆè¡¨ç¤ºåˆ†æ•?9ï¼Œå¯¹åº”é£Žé™©â€œä½Ž/ä¸?é«˜â€ï¼‰
 }
 
 
-// 不要�?'.'，显式指定静态目录（按你的项目结构改�?
-app.use(express.static(path.join(__dirname))); // �?public、dist �?
+// ä¸è¦ç”?'.'ï¼Œæ˜¾å¼æŒ‡å®šé™æ€ç›®å½•ï¼ˆæŒ‰ä½ çš„é¡¹ç›®ç»“æž„æ”¹ï¼?
+app.use(express.static(path.join(__dirname))); // æˆ?publicã€dist ç­?
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
