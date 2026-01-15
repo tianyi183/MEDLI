@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 try:
     if hasattr(os, "add_dll_directory"):
-        os.add_dll_directory(r"C:\msys64\ucrt64\bin")
+        os.add_dll_directory(r"bin")
 except Exception:
     pass
 from weasyprint import HTML, CSS
